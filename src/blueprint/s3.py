@@ -65,8 +65,8 @@ def download_file(file_name):
         download_time = time.time() - start_time
         
         return jsonify({
-            'download_time': download_time,
-            'file_size': file_size
+            'time': download_time,
+            'size': file_size
         })
 
     except Exception as e:
