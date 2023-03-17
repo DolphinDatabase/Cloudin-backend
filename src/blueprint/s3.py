@@ -28,46 +28,37 @@ s3 = boto3.client(
 
 #Define caminho para download
 FILE_PATH = "downloads/s3"
-
-# Cria a rota para listar o conteúdo do bucket
-@s3bp.route('/list')
-def list():
-    # Lista todos os objetos do bucket
-    response = s3.list_objects(Bucket=s3_bucket_name)
-    # Extrai os nomes dos objetos e os retorna
-    obj_names = [obj['Key'] for obj in response['Contents']]
-    return jsonify({'objects': obj_names})
+ 
 
 
-
-
-@s3bp.route('/download/<file_name>')
-def download_file(file_name):
-    try:    
+@s3bp.route('/upload/<file_name>')
+def upload_file(file_name):
+    try:
         if not os.path.exists(FILE_PATH):
             os.makedirs(FILE_PATH)
-
-        local_folder_path = os.path.join(os.getcwd(), 'downloads', 's3')
-        local_file_name = file_name
+            
         # Define o caminho completo do arquivo local
-        local_file_path = os.path.join(local_folder_path, local_file_name)
+        local_file_path = os.path.join(os.getcwd(), 'downloads', 's3', file_name)
 
-        # Mede o tempo de download do arquivo
+        # Obtém o tamanho do arquivo e o tipo MIME
+        #file_size = os.path.getsize(local_file_path)
+        #content_type, encoding = mimetypes.guess_type(local_file_path)
+
+        # Mede o tempo de upload do arquivo
         start_time = time.time()
 
-        # Faz o download do arquivo do S3
-        s3.download_file(s3_bucket_name, file_name, local_file_path)
+        # Faz o upload do arquivo para o S3
+        s3.upload_file(local_file_path, s3_bucket_name, file_name, ExtraArgs={'ContentType': content_type})
 
-         # Obtém o tamanho do arquivo e o tipo MIME
-        file_size = os.path.getsize(local_file_path)
+        # Calcula o tempo de upload
+        upload_time = time.time() - start_time
         
-        # Calcula o tempo de download
-        download_time = time.time() - start_time
-        
+        # Exclui o arquivo local
+        os.remove(local_file_path)
+
+        # Retorna o tamanho e tipo do arquivo, e o tempo de upload
         return jsonify({
-            'time': download_time,
-            'size': file_size
+            'time': upload_time
         })
-
     except Exception as e:
         return str(e)
