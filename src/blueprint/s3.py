@@ -41,8 +41,8 @@ def upload_file(file_name):
         local_file_path = os.path.join(os.getcwd(), 'downloads', 's3', file_name)
 
         # Obtém o tamanho do arquivo e o tipo MIME
-        file_size = os.path.getsize(local_file_path)
-        content_type, encoding = mimetypes.guess_type(local_file_path)
+        #file_size = os.path.getsize(local_file_path)
+        #content_type, encoding = mimetypes.guess_type(local_file_path)
 
         # Mede o tempo de upload do arquivo
         start_time = time.time()
@@ -58,9 +58,7 @@ def upload_file(file_name):
 
         # Retorna o tamanho e tipo do arquivo, e o tempo de upload
         return jsonify({
-            'file_size': file_size,
-            'content_type': content_type,
-            'upload_time': upload_time
+            'time': upload_time
         })
     except Exception as e:
         return str(e)
