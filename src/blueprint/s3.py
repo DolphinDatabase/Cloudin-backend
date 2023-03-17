@@ -52,6 +52,9 @@ def upload_file(file_name):
 
         # Calcula o tempo de upload
         upload_time = time.time() - start_time
+        
+        # Exclui o arquivo local
+        os.remove(local_file_path)
 
         # Retorna o tamanho e tipo do arquivo, e o tempo de upload
         return jsonify({
