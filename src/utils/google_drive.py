@@ -106,7 +106,7 @@ def upload_file_to_drive():
         media = MediaFileUpload(FILE_NAME, resumable=True)
         file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
         print("Arquivo enviado com sucesso! ID:", file.get("id"))
-        media.stream().close()  # fecha o arquivo para que possa ser excluído
+        media.stream().close() 
         os.remove(FILE_PATH)
         return jsonify("Arquivo enviado com sucesso! ID:", file.get("id"))
     
