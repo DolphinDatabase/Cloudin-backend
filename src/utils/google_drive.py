@@ -6,34 +6,34 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 import requests
+import os
+from google.oauth2.credentials import Credentials
+from googleapiclient.errors import HttpError
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaFileUpload
 
+FILE_PATH = "OVERRIDE THIS TO YOUR FILE PATH"
+ACCESS_TOKEN = "OVERRIDE THIS TO YOUR ACCESS TOKEN"
+FILE_ID = "OVERRIDE THIS TO YOUR FILE ID"
+FOLDER_ID = "OVERRIDE THIS TO YOUR FOLDER ID"
+FILE_NAME = "OVERRIDE THIS TO YOUR FILE NAME"
 
 SCOPES = ['https://www.googleapis.com/auth/drive']
 API_SERVICE_NAME = 'drive'
 API_VERSION = 'v3'
 
-CLIENT_SECRET_FILE = 'src/utils/secrets/google_client_secret.json'
-ACCESS_TOKEN_FILE = 'src/utils/secrets/access_token.txt'
-FILE_PATH = "downloads\google"
-ACCESS_TOKEN = "OVERRIDE THIS TO YOUR ACCESS TOKEN"
-FILE_ID = "OVERRIDE THIS TO YOUR FILE ID"
-
+CLIENT_SECRET_FILE = 'client_secret.json'
+ACCESS_TOKEN_FILE = 'access_token.txt'
 
 def authenticate():
-    creds = None
-    if 'token' in session:
-        creds = Credentials.from_authorized_user_info(session['token'])
 
-    if not creds or not creds.valid:
-        flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES)
-        creds = flow.run_local_server(port=0)
-        session['token'] = creds.to_json()
+    flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES)
+    creds = flow.run_local_server(port=0)
+    session['token'] = creds.to_json()
+    with open('access_token.txt', 'w') as f:
+        f.write(creds.to_json())
 
-        with open(ACCESS_TOKEN_FILE, 'w') as f:
-            f.write(creds.to_json())
-
-    return jsonify({'success': True})
-
+    return 'Autenticação realizada com sucesso!'
 
 def refresh_token():
     with open(ACCESS_TOKEN_FILE, 'r') as f:
@@ -46,7 +46,6 @@ def refresh_token():
         f.write(credentials.to_json())
 
     return jsonify({'success': True})
-
 
 
 def read_access_token():
@@ -98,6 +97,24 @@ def download_file(access_token, file_id):
             return "Erro ao fazer download do arquivo", 500
 
 
+def upload_file_to_drive():
+    creds = Credentials.from_authorized_user_file(ACCESS_TOKEN_FILE)
+    service = build('drive', 'v3', credentials=creds)
+
+    try:
+        file_metadata = {'name': FILE_NAME, 'parents': [FOLDER_ID]}
+        media = MediaFileUpload(FILE_NAME, resumable=True)
+        file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+        print("Arquivo enviado com sucesso! ID:", file.get("id"))
+        media.stream().close()  # fecha o arquivo para que possa ser excluído
+        os.remove(FILE_PATH)
+        return jsonify("Arquivo enviado com sucesso! ID:", file.get("id"))
+    
+    except HttpError as error:
+        print(F'Um erro ocorreu: {error}')
+        return "Erro ao fazer download do arquivo", 500
+
+
 def get_folder_path(service, folder_ids):
     """
     Returns the full path of each folder in the list folder_ids, starting from the root folder.
@@ -108,17 +125,14 @@ def get_folder_path(service, folder_ids):
         folder_path = []
         folder = service.files().get(fileId=folder_id, fields='id, name, parents').execute()
         
-        # Add folder name to folder path
         folder_path.append(folder['name'])
         
-        # Recursively find and add parent folder names to folder path
         while 'parents' in folder:
             parent_id = folder['parents'][0]
             parent = service.files().get(fileId=parent_id, fields='id, name, parents').execute()
             folder_path.append(parent['name'])
             folder = parent
         
-        # Reverse the folder path list to start from the root folder
         folder_path.reverse()
         
         folder_paths.append(folder_path)
