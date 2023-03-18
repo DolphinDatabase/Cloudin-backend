@@ -82,7 +82,7 @@ def upload_file(file_name):
 
         # Obtém o tamanho do arquivo e o tipo MIME
         #file_size = os.path.getsize(local_file_path)
-        #content_type, encoding = mimetypes.guess_type(local_file_path)
+        content_type, encoding = mimetypes.guess_type(local_file_path)
 
         # Mede o tempo de upload do arquivo
         start_time = time.time()
