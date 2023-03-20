@@ -1,9 +1,1 @@
 **/env
-**/venv
-__pycache__/
-src/utils/__pycache__
-__pycache__
-**/downloads
-**/venv
-access_token.txt
-client_secret.json
