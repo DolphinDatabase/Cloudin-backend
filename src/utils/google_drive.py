@@ -1,22 +1,28 @@
 import json
 import os
+import requests
+import time
+import psutil
 
 from flask import jsonify, session
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-import requests
-import os
 from google.oauth2.credentials import Credentials
 from googleapiclient.errors import HttpError
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
-FILE_PATH = "OVERRIDE THIS TO YOUR FILE PATH"
+
+FILE_PATH_DOWNLOAD = "downloads\google"
+FILE_PATH_UPLOAD = "downloads\\google\\remake_big_data.png"
+
 ACCESS_TOKEN = "OVERRIDE THIS TO YOUR ACCESS TOKEN"
 FILE_ID = "OVERRIDE THIS TO YOUR FILE ID"
 FOLDER_ID = "OVERRIDE THIS TO YOUR FOLDER ID"
-FILE_NAME = "OVERRIDE THIS TO YOUR FILE NAME"
+
+FILE_NAME_DOWNLOAD = "test.pdf"
+FILE_NAME_UPLOAD = "remake_big_data.png"
 
 SCOPES = ['https://www.googleapis.com/auth/drive']
 API_SERVICE_NAME = 'drive'
@@ -83,13 +89,25 @@ def download_file(access_token, file_id):
         if file_id == '':
             file_id = FILE_ID
         file_url = f"https://www.googleapis.com/drive/v3/files/{file_id}?alt=media"
-        response = requests.get(file_url, headers={"Authorization": f"Bearer {access_token}"})
-        if not os.path.exists(FILE_PATH):
-            os.makedirs(FILE_PATH)
+        start_time = time.time()
+        response = requests.get(file_url, headers={"Authorization": f"Bearer {access_token}"}, stream=True)
+        if not os.path.exists(FILE_PATH_DOWNLOAD):
+            os.makedirs(FILE_PATH_DOWNLOAD)
 
-        output_file = os.path.join(FILE_PATH, "teste.pdf")
+        output_file = os.path.join(FILE_PATH_DOWNLOAD, "teste.pdf")
         with open(output_file, 'wb') as output:
-            output.write(response.content)
+            for chunk in response.iter_content(chunk_size=1024):
+                if chunk:
+                    output.write(chunk)
+                    # Obter informações do sistema e da rede
+                    total_time = time.time() - start_time
+                    bytes_recv = psutil.net_io_counters().bytes_recv
+                    bytes_sent = psutil.net_io_counters().bytes_sent
+                    print(f"Tempo total: {total_time:.2f}s, Bytes recebidos: {bytes_recv}, Bytes enviados: {bytes_sent}")
+
+        # Obter informações do arquivo baixado
+        file_size = os.path.getsize(output_file)
+        print(f"Tamanho do arquivo baixado: {file_size} bytes")
 
         return jsonify({'metadados':f'File downloaded successfully to {output_file}'})
     except Exception as e:
@@ -102,12 +120,26 @@ def upload_file_to_drive():
     service = build('drive', 'v3', credentials=creds)
 
     try:
-        file_metadata = {'name': FILE_NAME, 'parents': [FOLDER_ID]}
-        media = MediaFileUpload(FILE_NAME, resumable=True)
+        if os.path.exists(FILE_PATH_UPLOAD):
+            print("File exists!")
+        else:
+            print("File does not exist.")
+        file_metadata = {'name': os.path.basename(FILE_PATH_UPLOAD), 'parents': [FOLDER_ID]}
+        media = MediaFileUpload(FILE_PATH_UPLOAD, resumable=True)
+        start_time = time.time()
         file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
-        print("Arquivo enviado com sucesso! ID:", file.get("id"))
+        total_time = time.time() - start_time
+
+        # Obter informações do sistema e da rede
+        bytes_recv = psutil.net_io_counters().bytes_recv
+        bytes_sent = psutil.net_io_counters().bytes_sent
+        print(f"Tempo total: {total_time:.2f}s, Bytes recebidos: {bytes_recv}, Bytes enviados: {bytes_sent}")
         media.stream().close() 
-        os.remove(FILE_PATH)
+
+        # Obter informações do arquivo enviado
+        file_size = os.path.getsize(FILE_PATH_UPLOAD)
+        print(f"Tamanho do arquivo enviado: {file_size} bytes")
+        os.remove(FILE_PATH_UPLOAD)
         return jsonify("Arquivo enviado com sucesso! ID:", file.get("id"))
     
     except HttpError as error:
