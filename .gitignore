@@ -1,6 +1,8 @@
 **/env
+src/utils/__pycache__
+__pycache__
+**/downloads
 **/venv
 __pycache__/
-**/downloads
 access_token.txt
 client_secret.json
