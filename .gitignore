@@ -1,3 +1,5 @@
 **/env
+src/utils/__pycache__
+__pycache__
+**/downloads
 **/venv
-__pycache__/
