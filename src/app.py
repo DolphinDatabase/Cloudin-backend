@@ -7,6 +7,7 @@ from .model.file import File
 
 from .blueprint.s3 import s3bp
 from .blueprint.transaction import tbp
+from .blueprint.drive import drivebp
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://backend:api5sem@ec2-54-227-6-234.compute-1.amazonaws.com:3306/cloudin'
@@ -20,6 +21,7 @@ with app.app_context():
 ma.init_app(app)
 app.register_blueprint(s3bp)
 app.register_blueprint(tbp)
+app.register_blueprint(drivebp)
 
 @app.route("/")
 def helloWorld():
