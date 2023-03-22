@@ -4,9 +4,9 @@ import datetime
 
 class Application(db.Model):
     __tablename__ = "application"
-    id = db.Column("app_id",db.Integer, primary_key=True)
-    application_id = db.Column("app_application_id",db.String(200))
-    dt_log = db.Column("app_dt_log",db.DateTime,default=datetime.datetime.now())
+    app_id = db.Column("app_id",db.String(200),primary_key=True)
+    created = db.Column("app_created",db.DateTime,default=datetime.datetime.now())
+    transaction = db.relationship('Transaction', backref='application')
   
     def __repr__(self):
         return '<Application %r>' % self.id
