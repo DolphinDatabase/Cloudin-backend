@@ -8,7 +8,7 @@ class Transaction(db.Model):
     origin = db.Column("trn_origin",db.String(50), nullable=False)
     destiny = db.Column("trn_destiny",db.String(50), nullable=False)
     created = db.Column("trn_created",db.DateTime,default=datetime.datetime.now())
-    file = db.relationship('File', backref='transaction', lazy='dynamic')
+    file = db.relationship('File', backref='transaction')
 
     def __repr__(self):
         return '<Transaction %r>' % self.id
