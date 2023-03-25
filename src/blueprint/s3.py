@@ -1,4 +1,4 @@
-from flask import Flask, jsonify,send_file,Blueprint
+from flask import Flask, jsonify,send_file,Blueprint, request
 import boto3
 import os
 import time
@@ -17,6 +17,34 @@ s3bp = Blueprint('s3', __name__, url_prefix='/s3')
 
 #Define caminho para download
 FILE_PATH = "downloads/s3"
+
+
+
+@s3bp.route('/list')
+def list():
+    token = request.headers.get('token')
+    tk = token.split(" ")
+
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=tk[0],
+        aws_secret_access_key=tk[1],
+        region_name=tk[2]
+    )
+
+    # Lista todos os objetos do bucket
+    response = s3.list_objects(Bucket=tk[3])
+    # Extrai as informações dos objetos e os retorna
+    obj_list = []
+    for obj in response['Contents']:
+        obj_dict = {}
+        obj_dict['id'] = obj['Key']
+        obj_dict['name'] = obj['Key']
+        obj_dict['size'] = s3.head_object(Bucket=tk[3], Key=obj['Key'])['ContentLength']
+        obj_list.append(obj_dict)
+    return jsonify({'result': obj_list})
+
+
 
 @s3bp.route('/download/<file_name>')
 def download_file(file_id,file_name,token):
@@ -40,6 +68,8 @@ def download_file(file_id,file_name,token):
         return {'time': download_time,'size': file_size}
     except Exception as e:
         return {'error':f'download error: {e}'}
+
+
 
 @s3bp.route('/upload/<file_name>')
 def upload_file(file_name,token,origin):
