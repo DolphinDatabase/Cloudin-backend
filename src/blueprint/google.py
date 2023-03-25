@@ -26,6 +26,28 @@ drivebp = Blueprint('google', __name__, url_prefix='/google')
 def getMymetype(url):
     return mimetypes.MimeTypes().guess_type(url,strict=True)
 
+@drivebp.route('/list')
+def list_files():
+    try:
+        token = request.headers.get('token')
+        url = 'https://www.googleapis.com/drive/v3/files'
+        headers = {"Authorization": f"Bearer {token}"}
+        params = {'pageSize': 1000, 'fields': 'nextPageToken, files(id, name, size)'}
+        files = []
+        while True:
+            response = requests.get(url, headers=headers, params=params)
+            json_response = response.json()
+            files.extend(json_response['files'])
+            next_page_token = json_response.get('nextPageToken', None)
+            if not next_page_token:
+                break
+            params['pageToken'] = next_page_token
+        return {'result': files}
+    except Exception as e:
+        return {'error':f'list files error: {e}'}
+
+
+
 @drivebp.route('/download')
 def download_file(file_id,file_name,token):
     try:
