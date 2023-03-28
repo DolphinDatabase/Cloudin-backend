@@ -11,7 +11,7 @@ tbp = Blueprint('transaction', __name__, url_prefix="/transaction")
 @tbp.route('/<id>', methods=['GET'])
 def list_transaction(id):
     schema = TransactionSchema(many=True)
-    query = Transaction.query.filter_by(application_id=id).all()
+    query = Transaction.query.filter_by(application=id).all()
     transactions = schema.dump(query)
     return jsonify(transactions)
 
@@ -27,7 +27,7 @@ def create_transaction():
     transaction.origin = body['origin']
     transaction.destiny = body['destiny']
     transaction.status = "Em andamento"
-    transaction.application_id = application
+    transaction.application = application
     
     db.session.add(transaction)
     db.session.commit()
