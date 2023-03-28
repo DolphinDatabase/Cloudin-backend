@@ -9,3 +9,4 @@ class TransactionSchema(ma.Schema):
     destiny = fields.String(dump_only=True)
     created = fields.DateTime(dump_only=True)
     file = fields.Nested(fileSchema,many=True)
+    application = fields.String(dump_only=True)

@@ -9,7 +9,7 @@ class Transaction(db.Model):
     destiny = db.Column("trn_destiny",db.String(50), nullable=False)
     created = db.Column("trn_created",db.DateTime,default=datetime.datetime.now())
     file = db.relationship('File', backref='transaction')
-    application_id = db.Column("app_id",db.String(200), db.ForeignKey('application.app_id'))
+    application = db.Column("app_id",db.String(50))
 
     def __repr__(self):
         return '<Transaction %r>' % self.id
