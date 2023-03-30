@@ -48,14 +48,14 @@ def list():
 
 @s3bp.route('/download/<file_name>', strict_slashes=False)
 def download_file(file_id,file_name,token):
-    tk = token.split(" ")
-    s3 = boto3.client(
-        's3',
-        aws_access_key_id=tk[0],
-        aws_secret_access_key=tk[1],
-        region_name=tk[2]
-    )
-    try:    
+    try: 
+        tk = token.split(" ")
+        s3 = boto3.client(
+            's3',
+            aws_access_key_id=tk[0],
+            aws_secret_access_key=tk[1],
+            region_name=tk[2]
+        )   
         if not os.path.exists(FILE_PATH):
             os.makedirs(FILE_PATH)
         local_folder_path = os.path.join(os.getcwd(), 'downloads', 's3')
@@ -73,14 +73,14 @@ def download_file(file_id,file_name,token):
 
 @s3bp.route('/upload/<file_name>', strict_slashes=False)
 def upload_file(file_name,token,origin):
-    tk = token.split(" ")
-    s3 = boto3.client(
-        's3',
-        aws_access_key_id=tk[0],
-        aws_secret_access_key=tk[1],
-        region_name=tk[2]
-    )
     try:
+        tk = token.split(" ")
+        s3 = boto3.client(
+            's3',
+            aws_access_key_id=tk[0],
+            aws_secret_access_key=tk[1],
+            region_name=tk[2]
+        )
         if not os.path.exists(FILE_PATH):
             os.makedirs(FILE_PATH)
         local_file_path = os.path.join(os.getcwd(), 'downloads', origin, file_name)

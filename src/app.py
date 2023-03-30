@@ -10,8 +10,8 @@ from .blueprint.google import drivebp
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://backend:api5sem@ec2-18-208-193-99.compute-1.amazonaws.com:3306/cloudin'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://dbuser:dbuser@localhost:3306/cloudin'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://backend:api5sem@ec2-18-208-193-99.compute-1.amazonaws.com:3306/cloudin'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://dbuser:dbuser@localhost:3306/cloudin'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
