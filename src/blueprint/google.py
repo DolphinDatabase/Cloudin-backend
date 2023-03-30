@@ -26,7 +26,7 @@ drivebp = Blueprint('google', __name__, url_prefix='/google')
 def getMymetype(url):
     return mimetypes.MimeTypes().guess_type(url,strict=True)
 
-@drivebp.route('/list', strict_slashes=False)
+@drivebp.route('/list')
 def list_files():
     try:
         token = request.headers.get('token')
@@ -48,7 +48,7 @@ def list_files():
 
 
 
-@drivebp.route('/download', strict_slashes=False)
+@drivebp.route('/download')
 def download_file(file_id,file_name,token):
     try:
         file_url = f"https://www.googleapis.com/drive/v3/files/{file_id}?alt=media"
@@ -70,7 +70,7 @@ def download_file(file_id,file_name,token):
         return {'error':f'download error: {e}'}
 
 
-@drivebp.route('/upload', strict_slashes=False)
+@drivebp.route('/upload')
 def upload_file(file_name,token, origin):
     try:
         url = "https://www.googleapis.com/drive/v2/files"
