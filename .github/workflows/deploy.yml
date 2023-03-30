@@ -18,7 +18,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
                     cd /home/ec2-user/Cloudin-backend
-                    git pull
+                    git pull origin main
                     ./../cleanContainer.sh
                     docker build --tag cloudin-backend .
                     docker run -d -p 5000:5000 cloudin-backend 
