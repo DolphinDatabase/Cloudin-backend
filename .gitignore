@@ -1,8 +1,8 @@
 **/env
-**/src/utils/__pycache__
-**/src/model/__pycache__
-**/src/blueprint/__pycache__
-**/src/schema/__pycache__
+src/utils/__pycache__
+src/model/__pycache__
+src/blueprint/__pycache__
+src/schema/__pycache__
 __pycache__
 **/downloads
 **/venv
