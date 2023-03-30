@@ -20,7 +20,7 @@ FILE_PATH = "downloads/s3"
 
 
 
-@s3bp.route('/list')
+@s3bp.route('/list', strict_slashes=False)
 def list():
     token = request.headers.get('token')
     tk = token.split(" ")
@@ -46,7 +46,7 @@ def list():
 
 
 
-@s3bp.route('/download/<file_name>')
+@s3bp.route('/download/<file_name>', strict_slashes=False)
 def download_file(file_id,file_name,token):
     tk = token.split(" ")
     s3 = boto3.client(
@@ -71,7 +71,7 @@ def download_file(file_id,file_name,token):
 
 
 
-@s3bp.route('/upload/<file_name>')
+@s3bp.route('/upload/<file_name>', strict_slashes=False)
 def upload_file(file_name,token,origin):
     tk = token.split(" ")
     s3 = boto3.client(
