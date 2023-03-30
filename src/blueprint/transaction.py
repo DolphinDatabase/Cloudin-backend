@@ -8,14 +8,14 @@ from ..model.file import File
 
 tbp = Blueprint('transaction', __name__, url_prefix="/transaction")
 
-@tbp.route('/<id>', methods=['GET'], strict_slashes=False)
+@tbp.route('/<id>', methods=['GET'])
 def list_transaction(id):
     schema = TransactionSchema(many=True)
     query = Transaction.query.filter_by(application=id).all()
     transactions = schema.dump(query)
     return jsonify(transactions)
 
-@tbp.route('/', methods=['POST'], strict_slashes=False)
+@tbp.route('/', methods=['POST'])
 def create_transaction():
     body = request.get_json()
     origin_token = request.headers.get('origin_token')
