@@ -54,10 +54,10 @@ def download_file(file_id,file_name,token):
         file_url = f"https://www.googleapis.com/drive/v3/files/{file_id}?alt=media"
         start_time = time.time()
         response = requests.get(file_url, headers={"Authorization": f"Bearer {token}"}, stream=True)
-        if not os.path.exists('downloads\google'):
-            os.makedirs('downloads\google')
+        if not os.path.exists('./downloads/google'):
+            os.makedirs('./downloads/google')
 
-        output_file = os.path.join('downloads\google', file_name)
+        output_file = os.path.join('./downloads/google', file_name)
         total_time = None
         with open(output_file, 'wb') as output:
             for chunk in response.iter_content(chunk_size=1024):
@@ -76,7 +76,7 @@ def upload_file(file_name,token, origin):
         url = "https://www.googleapis.com/drive/v2/files"
         data = {
             "title": file_name,
-            "mimeType": getMymetype('downloads/google/'+file_name)[0],
+            "mimeType": getMymetype('./downloads/google/'+file_name)[0],
             "description": "Powered by Cloud-in"
         }
         start_time = time.time()
