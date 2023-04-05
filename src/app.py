@@ -1,7 +1,7 @@
 from flask import Flask
 from .model.database import db 
 from .schema.schema import ma
-
+import os
 from flask_cors import CORS
 
 from .model.transaction import Transaction
@@ -12,8 +12,8 @@ from .blueprint.google import drivebp
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://backend:api5sem@ec2-18-208-193-99.compute-1.amazonaws.com:3306/cloudin'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://dbuser:dbuser@localhost:3306/cloudin'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://backend:api5sem@ec2-18-208-193-99.compute-1.amazonaws.com:3306/cloudin'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("SQLALCHEMY_DATABASE_URI", 'mysql://dbuser:dbuser@localhost:3307/cloudin')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 CORS(app)
 db.init_app(app)
