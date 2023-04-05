@@ -7,9 +7,12 @@ class Transaction(db.Model):
     status = db.Column("trn_status",db.String(50), nullable=False)
     origin = db.Column("trn_origin",db.String(50), nullable=False)
     destiny = db.Column("trn_destiny",db.String(50), nullable=False)
+    originFolder = db.Column("trn_originFolder",db.String(50), nullable=False)
+    destinyFolder = db.Column("trn_destinyFolder",db.String(50), nullable=False)
+    originToken = db.Column("trn_originToken",db.String(50), nullable=False)
+    destinyToken = db.Column("trn_destinyToken",db.String(50), nullable=False)
     created = db.Column("trn_created",db.DateTime,default=datetime.datetime.now())
     file = db.relationship('File', backref='transaction')
-    application = db.Column("app_id",db.String(50))
 
     def __repr__(self):
         return '<Transaction %r>' % self.id
