@@ -91,3 +91,6 @@ def upload_file(file_name,token, origin):
         return{'time':total_time}
     except Exception as error:
         return {'error':f'upload error: {error}'}
+
+def soma(x, y):
+    return x + y
