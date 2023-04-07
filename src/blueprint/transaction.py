@@ -22,7 +22,7 @@ def create_transaction():
     destiny_token = request.headers.get('destiny_token')
     application = request.headers.get('application')
     transaction_data = {}
-
+    
     transaction = Transaction()
     transaction.origin = body['origin']
     transaction.destiny = body['destiny']

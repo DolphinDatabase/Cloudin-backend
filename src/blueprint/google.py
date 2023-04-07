@@ -1,3 +1,4 @@
+from http.client import HTTPException
 from flask import Blueprint,jsonify,request
 import requests
 import time
@@ -34,18 +35,16 @@ def list_files():
         headers = {"Authorization": f"Bearer {token}"}
         params = {'pageSize': 1000, 'fields': 'nextPageToken, files(id, name, size)'}
         files = []
-        while True:
+        next_page_token = True
+        while next_page_token:
             response = requests.get(url, headers=headers, params=params)
             json_response = response.json()
             files.extend(json_response['files'])
-            next_page_token = json_response.get('nextPageToken', None)
-            if not next_page_token:
-                break
+            next_page_token = json_response.get('nextPageToken', None) 
             params['pageToken'] = next_page_token
         return {'result': files}
     except Exception as e:
         return {'error':f'list files error: {e}'}
-
 
 
 @drivebp.route('/download', strict_slashes=False)
