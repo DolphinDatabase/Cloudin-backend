@@ -38,3 +38,4 @@ tzdata==2023.3
 tzlocal==4.3
 urllib3==1.26.15
 Werkzeug==2.2.3
+black==23.3.0
