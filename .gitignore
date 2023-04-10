@@ -9,3 +9,4 @@ __pycache__/
 /__pycache__
 access_token.txt
 client_secret.json
+/mysql-data
