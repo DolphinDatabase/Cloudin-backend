@@ -10,7 +10,7 @@ class Transaction(db.Model):
     config_id = db.Column(
         "cfg_id", db.Integer, db.ForeignKey("config.cfg_id")
     )
-    file = db.relationship("File", backref="transaction_id")
+    file = db.relationship("File", backref="transaction")
 
     def __repr__(self):
         return "<Transaction %r>" % self.id
