@@ -4,6 +4,10 @@ from .model.database import db
 from .schema.schema import ma
 from apscheduler.schedulers.background import BackgroundScheduler
 
+from .model.config import Config
+from .model.transaction import Transaction
+from .model.file import File
+
 from flask_cors import CORS
 from .blueprint.s3 import s3bp
 from .blueprint.transaction import tbp
