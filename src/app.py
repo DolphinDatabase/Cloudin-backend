@@ -2,7 +2,7 @@ from flask import Flask, Response
 from .utils.MessageAnnouncer import MessageAnnouncer
 from .model.database import db 
 from .schema.schema import ma
-from apscheduler.schedulers.background import BackgroundScheduler
+from .utils.scheduler import scheduler
 
 from .model.config import Config
 from .model.transaction import Transaction
@@ -18,7 +18,7 @@ import os
 
 app = Flask(__name__)
 #app.config["SQLALCHEMY_DATABASE_URI" ] = "mysql://backend:api5sem@ec2-54-91-130-106.compute-1.amazonaws.com:3306/cloudin"
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://dbuser:dbuser@localhost:3306/cloudin"
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://dbuser:dbpass@172.17.0.2:3306/cloudin"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 CORS(app)
 db.init_app(app)
@@ -53,14 +53,13 @@ def listen():
 
     return Response(stream(), mimetype='text/event-stream')
 
+
+@scheduler.scheduled_job('interval', seconds=10)
 def myFunction():
     print("Automatic transfer")
     msg = format_sse(data='ok',event='message')
     announcer.announce(msg=msg)
 
-sched = BackgroundScheduler(daemon=True)
-sched.add_job(myFunction,'interval',seconds=10)
-sched.start()
 
 @app.route("/")
 def helloWorld():
