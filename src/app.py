@@ -12,6 +12,7 @@ from flask_cors import CORS
 from .blueprint.s3 import s3bp
 from .blueprint.transaction import tbp
 from .blueprint.google import drivebp
+from .blueprint.config import config_bp
 from .responses.exceptions import config_error
 import os
 
@@ -29,6 +30,7 @@ ma.init_app(app)
 app.register_blueprint(s3bp)
 app.register_blueprint(tbp)
 app.register_blueprint(drivebp)
+app.register_blueprint(config_bp)
 config_error(app)
 
 announcer = MessageAnnouncer()

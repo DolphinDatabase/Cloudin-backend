@@ -9,4 +9,15 @@ class Config(db.Model):
     destinyFolder = db.Column("trn_destinyFolder", db.String(50), nullable=False)
     originToken = db.Column("trn_originToken", db.String(50), nullable=False)
     destinyToken = db.Column("trn_destinyToken", db.String(50), nullable=False)
-    transaction = db.relationship("Transaction", backref="config_id")
+    transaction = db.relationship("Transaction", backref="config")
+
+    def __init__(self):
+        None
+
+    def __init__(self, origin=None, destiny=None, originFolder=None, destinyFolder=None, originToken=None, destinyToken=None):
+        self.origin = origin
+        self.destiny = destiny
+        self.originFolder = originFolder
+        self.destinyFolder = destinyFolder
+        self.originToken = originToken
+        self.destinyToken = destinyToken
