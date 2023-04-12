@@ -7,35 +7,35 @@ import mimetypes
 
 s3bp = Blueprint("s3", __name__, url_prefix="/s3")
 
-
-# Define as credenciais da AWS
-# aws_access_key_id = 'AKIA4VVR7RPQYTILT3MO'
-# aws_secret_access_key = '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'
-# aws_region_name = 'us-east-1'
-# s3_bucket_name = 'cloudin-bucket'
-
-
-# Define caminho para download
 FILE_PATH = "downloads/s3"
 
-@s3bp.route('/list/folders', strict_slashes=False)
+
+def filesByFolderS3(token, folder):
+    tk = token.split(" ")
+    s3 = boto3.client(
+        "s3", aws_access_key_id=tk[0], aws_secret_access_key=tk[1], region_name=tk[2]
+    )
+
+    files = s3.list_objects(Bucket=tk[3], Prefix=folder)
+    num_of_files = len(files["Contents"]) - 1
+    return num_of_files
+
+
+@s3bp.route("/list/folders", strict_slashes=False)
 def listFolders():
-    token = request.headers.get('token')
+    token = request.headers.get("token")
     tk = token.split(" ")
 
     s3 = boto3.client(
-        's3',
-        aws_access_key_id=tk[0],
-        aws_secret_access_key=tk[1],
-        region_name=tk[2]
+        "s3", aws_access_key_id=tk[0], aws_secret_access_key=tk[1], region_name=tk[2]
     )
 
     # Lista todos os objetos do bucket
-    response = s3.list_objects(Bucket=tk[3],Delimiter='/')
+    response = s3.list_objects(Bucket=tk[3], Delimiter="/")
     # Extrai as informações dos objetos e os retorna
     obj_list = []
-    for i in response.get('CommonPrefixes'):
-        obj_list.append(i['Prefix'].replace("/",""))
+    for i in response.get("CommonPrefixes"):
+        obj_list.append(i["Prefix"].replace("/", ""))
     return make_response(jsonify(obj_list), 200)
 
 

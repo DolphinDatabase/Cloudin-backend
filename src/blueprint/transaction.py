@@ -4,9 +4,34 @@ from ..schema.transactionSchema import TransactionSchema
 import importlib.util
 
 from ..model.transaction import Transaction
+from ..model.config import Config
 from ..model.file import File
 
 tbp = Blueprint("transaction", __name__, url_prefix="/transaction")
+
+
+def new_transaction(config: Config):
+    transaction = Transaction()
+    transaction.status = "Em andamento"
+    config.transaction.append(transaction)
+    db.session.add(transaction)
+    db.session.add(config)
+    db.session.commit()
+    return transaction
+
+
+def update_transaction(transaction: Transaction, status, files):
+    transaction.status = status
+    for f in files:
+        file = File()
+        file.name = f["name"]
+        file.time = f["time"]
+        file.size = f["size"]
+        transaction.file.append(file)
+        db.session.add(file)
+    db.session.add(transaction)
+    db.session.commit()
+    return transaction
 
 
 @tbp.route("/<id>", methods=["GET"], strict_slashes=False)
@@ -16,6 +41,7 @@ def list_transaction(id):
     transactions = schema.dump(query)
     response_body = jsonify(transactions)
     return make_response(response_body, 200)
+
 
 @tbp.route("/", methods=["POST"], strict_slashes=False)
 def create_transaction():

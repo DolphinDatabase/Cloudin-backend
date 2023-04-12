@@ -1,6 +1,7 @@
 from utils.scheduler import scheduler
 from model.config import Config
 
+
 class Repository:
     verification_interval: int = 10
     configuration: Config
@@ -16,4 +17,4 @@ class Repository:
         pass
 
     def start_verification(self) -> None:
-        scheduler.add_job(self.list, 'interval', self.verification_interval)
+        scheduler.add_job(self.list, "interval", self.verification_interval)
