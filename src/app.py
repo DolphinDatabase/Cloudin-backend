@@ -1,6 +1,6 @@
 from flask import Flask, Response
 from .utils.MessageAnnouncer import MessageAnnouncer
-from .model.database import db 
+from .model.database import db
 from .schema.schema import ma
 import os
 from flask_cors import CORS
@@ -19,9 +19,11 @@ from .responses.exceptions import config_error
 import os
 
 app = Flask(__name__)
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://backend:api5sem@ec2-18-208-193-99.compute-1.amazonaws.com:3306/cloudin'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("SQLALCHEMY_DATABASE_URI", 'mysql://dbuser:dbuser@localhost:3307/cloudin')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://backend:api5sem@ec2-18-208-193-99.compute-1.amazonaws.com:3306/cloudin'
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
+    "SQLALCHEMY_DATABASE_URI", "mysql://dbuser:dbuser@localhost:3307/cloudin"
+)
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 CORS(app)
 db.init_app(app)
 with app.app_context():
@@ -36,32 +38,35 @@ config_error(app)
 
 announcer = MessageAnnouncer()
 
+
 def format_sse(data: str, event=None) -> str:
-    msg = f'data: {data}\n\n'
+    msg = f"data: {data}\n\n"
     if event is not None:
-        msg = f'event: {event}\n{msg}'
+        msg = f"event: {event}\n{msg}"
     return msg
 
 
-@app.route('/listen', methods=['GET'])
+@app.route("/listen", methods=["GET"])
 def listen():
-
     def stream():
         messages = announcer.listen()  # returns a queue.Queue
         while True:
             msg = messages.get()  # blocks until a new message arrives
             yield msg
 
-    return Response(stream(), mimetype='text/event-stream')
+    return Response(stream(), mimetype="text/event-stream")
+
 
 def myFunction():
     print("Automatic transfer")
-    msg = format_sse(data='ok',event='message')
+    msg = format_sse(data="ok", event="message")
     announcer.announce(msg=msg)
 
+
 sched = BackgroundScheduler(daemon=True)
-sched.add_job(myFunction,'interval',seconds=10)
+sched.add_job(myFunction, "interval", seconds=10)
 sched.start()
+
 
 @app.route("/")
 def helloWorld():

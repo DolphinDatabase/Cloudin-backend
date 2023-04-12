@@ -17,6 +17,7 @@ def list_transaction(id):
     response_body = jsonify(transactions)
     return make_response(response_body, 200)
 
+
 @tbp.route("/", methods=["POST"], strict_slashes=False)
 def create_transaction():
     body = request.get_json()

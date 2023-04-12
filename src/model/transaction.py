@@ -7,9 +7,7 @@ class Transaction(db.Model):
     id = db.Column("trn_id", db.Integer, primary_key=True)
     status = db.Column("trn_status", db.String(50), nullable=False)
     created = db.Column("trn_created", db.DateTime, default=datetime.datetime.now())
-    config_id = db.Column(
-        "cfg_id", db.Integer, db.ForeignKey("config.cfg_id")
-    )
+    config_id = db.Column("cfg_id", db.Integer, db.ForeignKey("config.cfg_id"))
     file = db.relationship("File", backref="transaction_id")
 
     def __repr__(self):
