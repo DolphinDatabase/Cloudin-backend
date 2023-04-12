@@ -9,6 +9,7 @@ from ..model.file import File
 
 tbp = Blueprint("transaction", __name__, url_prefix="/transaction")
 
+
 def new_transaction(config: Config):
     transaction = Transaction()
     transaction.status = "Em andamento"
@@ -17,6 +18,7 @@ def new_transaction(config: Config):
     db.session.add(config)
     db.session.commit()
     return transaction
+
 
 def update_transaction(transaction: Transaction, status, files):
     transaction.status = status
@@ -31,6 +33,7 @@ def update_transaction(transaction: Transaction, status, files):
     db.session.commit()
     return transaction
 
+
 @tbp.route("/<id>", methods=["GET"], strict_slashes=False)
 def list_transaction(id):
     schema = TransactionSchema(many=True)
@@ -38,6 +41,7 @@ def list_transaction(id):
     transactions = schema.dump(query)
     response_body = jsonify(transactions)
     return make_response(response_body, 200)
+
 
 @tbp.route("/", methods=["POST"], strict_slashes=False)
 def create_transaction():

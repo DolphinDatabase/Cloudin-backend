@@ -1,5 +1,6 @@
 from .database import db
 
+
 class Config(db.Model):
     __tablename__ = "config"
     id = db.Column("cfg_id", db.Integer, primary_key=True)
@@ -14,7 +15,15 @@ class Config(db.Model):
     def __init__(self):
         None
 
-    def __init__(self, origin=None, destiny=None, originFolder=None, destinyFolder=None, originToken=None, destinyToken=None):
+    def __init__(
+        self,
+        origin=None,
+        destiny=None,
+        originFolder=None,
+        destinyFolder=None,
+        originToken=None,
+        destinyToken=None,
+    ):
         self.origin = origin
         self.destiny = destiny
         self.originFolder = originFolder

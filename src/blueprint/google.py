@@ -30,6 +30,16 @@ def getMymetype(url):
     return mimetypes.MimeTypes().guess_type(url, strict=True)
 
 
+def filesByFolderGoogle(token, folder):
+    headers = {"Authorization": f"Bearer {token}"}
+    params = {"q": f"'{folder}' in parents", "fields": "*"}
+    req = requests.get(
+        "https://www.googleapis.com/drive/v3/files", headers=headers, params=params
+    )
+    num_of_files = len(req.json()["files"]) - 1
+    return num_of_files
+
+
 @drivebp.route("/list", strict_slashes=False)
 def list_files():
     try:
