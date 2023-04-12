@@ -18,6 +18,20 @@ s3bp = Blueprint("s3", __name__, url_prefix="/s3")
 # Define caminho para download
 FILE_PATH = "downloads/s3"
 
+def filesByFolder(token,folder):
+    tk = token.split(" ")
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=tk[0],
+        aws_secret_access_key=tk[1],
+        region_name=tk[2]
+    )
+
+    files = s3.list_objects(Bucket=tk[3],Prefix=folder)
+    num_of_files = len(files['Contents'])-1
+    return num_of_files
+    
+
 @s3bp.route('/list/folders', strict_slashes=False)
 def listFolders():
     token = request.headers.get('token')
