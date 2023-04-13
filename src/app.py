@@ -12,7 +12,12 @@ from .schema.transactionSchema import TransactionSchema
 
 from flask_cors import CORS
 from .blueprint.s3 import s3bp, filesByFolderS3
-from .blueprint.transaction import tbp, new_transaction, update_transaction
+from .blueprint.transaction import (
+    tbp,
+    new_transaction,
+    update_transaction,
+    make_transaction,
+)
 from .blueprint.google import drivebp, filesByFolderGoogle
 from .blueprint.config import config_bp
 from .responses.exceptions import config_error
@@ -57,7 +62,7 @@ def listen():
     return Response(stream(), mimetype="text/event-stream")
 
 
-@scheduler.scheduled_job("interval", seconds=10)
+@scheduler.scheduled_job("interval", seconds=20)
 def myFunction():
     with app.app_context():
         schema = TransactionSchema()
@@ -74,10 +79,8 @@ def myFunction():
                     event="newTransaction",
                 )
                 announcer.announce(msg=msg)
-                # make the transfer
-                transaction = update_transaction(
-                    transaction, "Erro", [{"name": "teste", "time": 20, "size": 20}]
-                )
+                files = make_transaction(i)
+                transaction = update_transaction(transaction, "Concluido", files)
                 msg = format_sse(
                     data={"config": i.id, "transaction": schema.dump(transaction)},
                     event="updateTransaction",

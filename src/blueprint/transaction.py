@@ -7,6 +7,9 @@ from ..model.transaction import Transaction
 from ..model.config import Config
 from ..model.file import File
 
+from ..services.google import GoogleService
+from ..services.s3 import s3Service
+
 tbp = Blueprint("transaction", __name__, url_prefix="/transaction")
 
 
@@ -24,7 +27,7 @@ def update_transaction(transaction: Transaction, status, files):
     transaction.status = status
     for f in files:
         file = File()
-        file.name = f["name"]
+        file.name = f["title"]
         file.time = f["time"]
         file.size = f["size"]
         transaction.file.append(file)
@@ -32,6 +35,25 @@ def update_transaction(transaction: Transaction, status, files):
     db.session.add(transaction)
     db.session.commit()
     return transaction
+
+
+def make_transaction(config: Config):
+    if config.origin == "google":
+        originService = GoogleService(config.originToken)
+    elif config.origin == "s3":
+        originService = s3Service(config.originToken)
+    if config.destiny == "google":
+        destinyService = GoogleService(config.destinyToken)
+    elif config.destiny == "s3":
+        destinyService = s3Service(config.destinyToken)
+
+    transaction_data = []
+    for f in originService.list_files_by_folder(config.originFolder):
+        download = originService.download(f["id"], f["name"])
+        upload = destinyService.upload(f["name"], config.origin, config.destinyFolder)
+        download["time"] += upload["time"]
+        transaction_data.append(download)
+    return transaction_data
 
 
 @tbp.route("/<id>", methods=["GET"], strict_slashes=False)
