@@ -1,9 +1,10 @@
-from .schema import ma
+from utils.schema import ma
 from flask_marshmallow.fields import fields
-from .fileSchema import fileSchema
+
+from .file_schema import FileSchema
 
 
 class TransactionSchema(ma.Schema):
     id = fields.Integer(dump_only=True)
     status = fields.String(dump_only=True)
-    file = fields.Nested(fileSchema, many=True)
+    file = fields.Nested(FileSchema, many=True)

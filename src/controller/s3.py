@@ -5,7 +5,7 @@ import time
 import mimetypes
 
 
-s3bp = Blueprint("s3", __name__, url_prefix="/s3")
+s3_blueprint = Blueprint("s3", __name__, url_prefix="/s3")
 
 FILE_PATH = "downloads/s3"
 
@@ -21,7 +21,7 @@ def filesByFolderS3(token, folder):
     return num_of_files
 
 
-@s3bp.route("/list/folders", strict_slashes=False)
+@s3_blueprint.route("/list/folders", strict_slashes=False)
 def listFolders():
     token = request.headers.get("token")
     tk = token.split(" ")
@@ -39,7 +39,7 @@ def listFolders():
     return make_response(jsonify(obj_list), 200)
 
 
-@s3bp.route("/list", strict_slashes=False)
+@s3_blueprint.route("/list", strict_slashes=False)
 def list():
     token = request.headers.get("token")
     tk = token.split(" ")
@@ -62,7 +62,7 @@ def list():
     return make_response(jsonify(response_body), 200)
 
 
-@s3bp.route("/download/<file_name>", strict_slashes=False)
+@s3_blueprint.route("/download/<file_name>", strict_slashes=False)
 def download_file(file_id, file_name, token):
     try:
         tk = token.split(" ")
@@ -88,7 +88,7 @@ def download_file(file_id, file_name, token):
         return make_response(jsonify(response_body), 400)
 
 
-@s3bp.route("/upload/<file_name>", strict_slashes=False)
+@s3_blueprint.route("/upload/<file_name>", strict_slashes=False)
 def upload_file(file_name, token, origin):
     try:
         tk = token.split(" ")

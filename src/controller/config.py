@@ -1,13 +1,13 @@
 from flask import Blueprint, jsonify, make_response, request
-from http.client import HTTPException
-from ..schema.configSchema import ConfigSchema
-from ..model.database import db
-from ..model.config import Config
 
-config_bp = Blueprint("config", __name__, url_prefix="/config")
+from utils.database import db
+from model import *
+from schema import *
 
 
-@config_bp.route("/", methods=["GET"], strict_slashes=False)
+config_blueprint = Blueprint("config", __name__, url_prefix="/config")
+
+@config_blueprint.route("/", methods=["GET"], strict_slashes=False)
 def list_config():
     schema = ConfigSchema(many=True)
     query = Config().query.all()
@@ -15,7 +15,7 @@ def list_config():
     return make_response(response, 200)
 
 
-@config_bp.route("/", methods=["POST"], strict_slashes=False)
+@config_blueprint.route("/", methods=["POST"], strict_slashes=False)
 def create_config():
     body = request.get_json()
     data = Config(

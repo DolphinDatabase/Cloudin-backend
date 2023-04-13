@@ -1,4 +1,4 @@
-from .repository import Repository
+from .google_repository import GoogleDriveRepository
 
 
-__all__ = ["Repository"]
+__all__ = ["GoogleDriveRepository"]

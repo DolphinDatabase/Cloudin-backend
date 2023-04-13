@@ -1,13 +1,12 @@
 from flask import Blueprint, request, jsonify, make_response
-from ..model.database import db
-from ..schema.transactionSchema import TransactionSchema
 import importlib.util
 
-from ..model.transaction import Transaction
-from ..model.config import Config
-from ..model.file import File
+from model import *
+from schema import *
+from utils.database import db
 
-tbp = Blueprint("transaction", __name__, url_prefix="/transaction")
+
+transaction_blueprint = Blueprint("transaction", __name__, url_prefix="/transaction")
 
 
 def new_transaction(config: Config):
@@ -34,7 +33,7 @@ def update_transaction(transaction: Transaction, status, files):
     return transaction
 
 
-@tbp.route("/<id>", methods=["GET"], strict_slashes=False)
+@transaction_blueprint.route("/<id>", methods=["GET"], strict_slashes=False)
 def list_transaction(id):
     schema = TransactionSchema(many=True)
     query = Transaction.query.filter_by(application=id).all()
@@ -43,7 +42,7 @@ def list_transaction(id):
     return make_response(response_body, 200)
 
 
-@tbp.route("/", methods=["POST"], strict_slashes=False)
+@transaction_blueprint.route("/", methods=["POST"], strict_slashes=False)
 def create_transaction():
     body = request.get_json()
     origin_token = request.headers.get("origin_token")
@@ -63,7 +62,7 @@ def create_transaction():
     concluido = True
     # execute download
     origin = importlib.util.spec_from_file_location(
-        body["origin"], "./src/blueprint/" + body["origin"] + ".py"
+        body["origin"], "./src/controller/" + body["origin"] + ".py"
     ).loader.load_module()
     download = getattr(origin, "download_file")
     for f in body["files"]:
@@ -80,7 +79,7 @@ def create_transaction():
     # execute upload
     if concluido:
         destiny = importlib.util.spec_from_file_location(
-            body["destiny"], "./src/blueprint/" + body["destiny"] + ".py"
+            body["destiny"], "./src/controller/" + body["destiny"] + ".py"
         ).loader.load_module()
         upload = getattr(destiny, "upload_file")
         for f in body["files"]:

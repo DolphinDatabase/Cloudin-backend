@@ -1,6 +1,7 @@
-from .schema import ma
+from utils.schema import ma
 from flask_marshmallow.fields import fields
-from .transactionSchema import TransactionSchema
+
+from .transaction_schema import TransactionSchema
 
 
 class ConfigSchema(ma.Schema):
