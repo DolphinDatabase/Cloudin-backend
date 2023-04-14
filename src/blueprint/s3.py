@@ -9,10 +9,6 @@ s3bp = Blueprint("s3", __name__, url_prefix="/s3")
 
 FILE_PATH = "downloads/s3"
 
-
-
-
-
 @s3bp.route("/list/folders", strict_slashes=False)
 def listFolders():
     token = request.headers.get("token")
