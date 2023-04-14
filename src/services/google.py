@@ -10,8 +10,24 @@ from ..utils.mymeType import getMymetype
 class GoogleService:
     token = ""
 
-    def __init__(self, token):
-        self.token = token
+    def __init__(self, refreshToken:str):
+        data = {
+            "refresh_token":refreshToken,
+            "client_id":"532089225272-1im33klerc0hmvspgo6mh08aobithavt.apps.googleusercontent.com",
+            "client_secret":"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",
+            "grant_type":"refresh_token"
+        }
+        req = requests.post("https://oauth2.googleapis.com/token",json=data).json()
+        self.token = req['access_token']
+    
+    def files_by_folder(self, folder):
+        headers = {"Authorization": f"Bearer {self.token}"}
+        params = {"q": f"'{folder}' in parents", "fields": "*"}
+        req = requests.get(
+            "https://www.googleapis.com/drive/v3/files", headers=headers, params=params
+        )
+        num_of_files = len(req.json()["files"]) - 1
+        return num_of_files
 
     def list_files_by_folder(self, folder: str):
         try:
