@@ -9,7 +9,8 @@ from .model.transaction import Transaction
 from .model.file import File
 
 from .schema.transactionSchema import TransactionSchema
-
+from .services.google import GoogleService
+from .services.s3 import s3Service
 from flask_cors import CORS
 from .blueprint.s3 import s3bp, filesByFolderS3
 from .blueprint.transaction import (
@@ -68,10 +69,15 @@ def myFunction():
         schema = TransactionSchema()
         query = Config().query.all()
         for i in query:
-            if i.origin == "s3":
-                new_files = filesByFolderS3(i.originToken, i.originFolder)
-            elif i.origin == "google":
-                new_files = filesByFolderGoogle(i.originToken, i.originFolder)
+            if i.origin == "google":
+                originService = GoogleService(i.originToken)
+            elif i.origin == "s3":
+                originService = s3Service(i.originToken)
+            if i.destiny == "google":
+                destinyService = GoogleService(i.destinyToken)
+            elif i.destiny == "s3":
+                destinyService = s3Service(i.destinyToken)
+            new_files = originService.files_by_folder(i.originFolder)
             if new_files > 0:
                 transaction = new_transaction(i)
                 msg = format_sse(
@@ -79,7 +85,7 @@ def myFunction():
                     event="newTransaction",
                 )
                 announcer.announce(msg=msg)
-                files = make_transaction(i)
+                files = make_transaction(i,originService,destinyService)
                 transaction = update_transaction(transaction, "Concluido", files)
                 msg = format_sse(
                     data={"config": i.id, "transaction": schema.dump(transaction)},
