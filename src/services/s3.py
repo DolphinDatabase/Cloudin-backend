@@ -63,7 +63,7 @@ class s3Service:
         except Exception as e:
             return {"error": f"download error: {e}"}
 
-    def upload(self, fileName: str, path: str):
+    def upload(self, fileName: str, path: str, folder:str):
         try:
             tk = self.token.split(" ")
             s3 = boto3.client(
@@ -78,7 +78,7 @@ class s3Service:
             s3.upload_file(
                 local_file_path,
                 tk[3],
-                fileName,
+                folder+"/"+fileName,
                 ExtraArgs={"ContentType": content_type},
             )
             upload_time = time.time() - start_time

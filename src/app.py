@@ -12,7 +12,7 @@ from .schema.transactionSchema import TransactionSchema
 from .services.google import GoogleService
 from .services.s3 import s3Service
 from flask_cors import CORS
-from .blueprint.s3 import s3bp, filesByFolderS3
+from .blueprint.s3 import s3bp
 from .blueprint.transaction import (
     tbp,
     new_transaction,
