@@ -12,6 +12,7 @@ from .transaction import new_transaction, update_transaction
 def configure_routes(app):
     announcer = MessageAnnouncer()
 
+
     def format_sse(data: str, event=None) -> str:
         msg = f"data: {data}\n\n"
         if event is not None:
@@ -30,33 +31,37 @@ def configure_routes(app):
         return Response(stream(), mimetype="text/event-stream")
 
 
-    @scheduler.scheduled_job("interval", seconds=10)
-    def my_function():
+    @scheduler.scheduled_job("interval", seconds=20)
+    def myFunction():
         with app.app_context():
             schema = TransactionSchema()
             query = Config().query.all()
             for i in query:
-                if i.origin == "s3":
-                    new_files = filesByFolderS3(i.originToken, i.originFolder)
-                elif i.origin == "google":
-                    new_files = filesByFolderGoogle(i.originToken, i.originFolder)
+                if i.origin == "google":
+                    originService = GoogleService(i.originToken)
+                elif i.origin == "s3":
+                    originService = s3Service(i.originToken)
+                if i.destiny == "google":
+                    destinyService = GoogleService(i.destinyToken)
+                elif i.destiny == "s3":
+                    destinyService = s3Service(i.destinyToken)
+                new_files = originService.files_by_folder(i.originFolder)
                 if new_files > 0:
                     transaction = new_transaction(i)
                     msg = format_sse(
-                        data=f'{"config": {i.id}, "transaction": {schema.dump(transaction)}}',
+                        data={"config": i.id, "transaction": schema.dump(transaction)},
                         event="newTransaction",
                     )
                     announcer.announce(msg=msg)
-                    # make the transfer
-                    transaction = update_transaction(
-                        transaction, "Erro", [{"name": "teste", "time": 20, "size": 20}]
-                    )
+                    files = make_transaction(i,originService,destinyService)
+                    transaction = update_transaction(transaction, "Concluido", files)
                     msg = format_sse(
-                        data=f'{"config": {i.id}, "transaction": {schema.dump(transaction)}}',
+                        data={"config": i.id, "transaction": schema.dump(transaction)},
                         event="updateTransaction",
                     )
                     announcer.announce(msg=msg)
 
+
     @app.route("/")
-    def hello_world():
+    def helloWorld():
         return "Hello World!"

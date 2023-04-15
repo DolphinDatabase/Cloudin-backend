@@ -5,8 +5,10 @@ from ..model import *
 from ..schema import *
 from ..utils import *
 
+from ..services.google import GoogleService
+from ..services.s3 import s3Service
 
-transaction_blueprint = Blueprint("transaction", __name__, url_prefix="/transaction")
+tbp = Blueprint("transaction", __name__, url_prefix="/transaction")
 
 
 def new_transaction(config: Config):
@@ -23,7 +25,7 @@ def update_transaction(transaction: Transaction, status, files):
     transaction.status = status
     for f in files:
         file = File()
-        file.name = f["name"]
+        file.name = f["title"]
         file.time = f["time"]
         file.size = f["size"]
         transaction.file.append(file)
@@ -33,7 +35,17 @@ def update_transaction(transaction: Transaction, status, files):
     return transaction
 
 
-@transaction_blueprint.route("/<id>", methods=["GET"], strict_slashes=False)
+def make_transaction(config:Config,originService,destinyService):
+    transaction_data = []
+    for f in originService.list_files_by_folder(config.originFolder):
+        download = originService.download(f["id"], f["name"])
+        upload = destinyService.upload(f["name"], config.origin, config.destinyFolder)
+        download["time"] += upload["time"]
+        transaction_data.append(download)
+    return transaction_data
+
+
+@tbp.route("/<id>", methods=["GET"], strict_slashes=False)
 def list_transaction(id):
     schema = TransactionSchema(many=True)
     query = Transaction.query.filter_by(application=id).all()
@@ -42,7 +54,7 @@ def list_transaction(id):
     return make_response(response_body, 200)
 
 
-@transaction_blueprint.route("/", methods=["POST"], strict_slashes=False)
+@tbp.route("/", methods=["POST"], strict_slashes=False)
 def create_transaction():
     body = request.get_json()
     origin_token = request.headers.get("origin_token")
