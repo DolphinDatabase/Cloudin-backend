@@ -1,9 +1,9 @@
 from flask import Blueprint, request, jsonify, make_response
 import importlib.util
 
-from model import *
-from schema import *
-from utils.database import db
+from ..model import *
+from ..schema import *
+from ..utils import *
 
 
 transaction_blueprint = Blueprint("transaction", __name__, url_prefix="/transaction")

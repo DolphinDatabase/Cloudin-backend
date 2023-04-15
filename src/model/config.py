@@ -1,4 +1,4 @@
-from utils.database import db
+from ..utils import *
 
 
 class Config(db.Model):

@@ -1,5 +1,5 @@
-from utils.schema import ma
 from flask_marshmallow.fields import fields
+from ..utils import ma
 
 
 class FileSchema(ma.Schema):

@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify, make_response, request
 
-from utils.database import db
-from model import *
-from schema import *
+from ..utils import *
+from ..model import *
+from ..schema import *
 
 
 config_blueprint = Blueprint("config", __name__, url_prefix="/config")

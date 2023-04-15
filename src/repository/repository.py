@@ -1,4 +1,4 @@
-from utils.scheduler import scheduler
+from ..utils import *
 
 
 class Repository:
