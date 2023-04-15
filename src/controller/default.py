@@ -55,7 +55,11 @@ def configure_routes(app):
                     )
                     announcer.announce(msg=msg)
                     files = make_transaction(i,originService,destinyService)
-                    transaction = update_transaction(transaction, "Concluido", files)
+                    if not files:
+                        transaction = update_transaction(transaction, "Erro", files)
+                    else:
+                        transaction = update_transaction(transaction, "Concluido", files)
+
                     msg = format_sse(
                         data={"config": i.id, "transaction": schema.dump(transaction)},
                         event="updateTransaction",

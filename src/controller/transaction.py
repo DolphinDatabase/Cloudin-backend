@@ -38,10 +38,17 @@ def update_transaction(transaction: Transaction, status, files):
 def make_transaction(config:Config,originService,destinyService):
     transaction_data = []
     for f in originService.list_files_by_folder(config.originFolder):
-        download = originService.download(f["id"], f["name"])
-        upload = destinyService.upload(f["name"], config.origin, config.destinyFolder)
-        download["time"] += upload["time"]
-        transaction_data.append(download)
+        try:
+            download = originService.download(f["id"], f["name"])
+        except:
+            return 
+        try:
+            upload = destinyService.upload(f["name"], config.origin, config.destinyFolder)
+            download["time"] += upload["time"]
+            transaction_data.append(download)
+            originService.remove_file(f["name"], config.originFolder)            
+        except:
+            pass
     return transaction_data
 
 
