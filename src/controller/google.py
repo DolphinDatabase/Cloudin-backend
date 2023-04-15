@@ -7,7 +7,7 @@ import json
 from io import BytesIO
 
 
-drive_blueprint = Blueprint("google", __name__, url_prefix="/google")
+drivebp = Blueprint("google", __name__, url_prefix="/google")
 
 # @drivebp.route('/auth')
 # def authenticate():
@@ -38,7 +38,7 @@ def filesByFolderGoogle(token, folder):
     return num_of_files
 
 
-@drive_blueprint.route("/list", strict_slashes=False)
+@drivebp.route("/list", strict_slashes=False)
 def list_files():
     try:
         token = request.headers.get("token")
@@ -81,7 +81,7 @@ def list_folders():
 
 
 
-@drive_blueprint.route("/download", strict_slashes=False)
+@drivebp.route("/download", strict_slashes=False)
 def download_file(file_id, file_name, token):
     try:
         file_url = f"https://www.googleapis.com/drive/v3/files/{file_id}?alt=media"
@@ -107,7 +107,7 @@ def download_file(file_id, file_name, token):
         return make_response(jsonify({"error": f"download error: {e}"}), 500)
 
 
-@drive_blueprint.route("/upload", strict_slashes=False)
+@drivebp.route("/upload", strict_slashes=False)
 def upload_file(file_name, token, origin):
     try:
         url = "https://www.googleapis.com/drive/v2/files"

@@ -3,10 +3,11 @@ from flask import Response
 from ..utils import *
 from ..model import *
 from ..schema import *
+from ..services import *
 
 from .google import filesByFolderGoogle
 from .s3 import filesByFolderS3
-from .transaction import new_transaction, update_transaction
+from .transaction import new_transaction, update_transaction, make_transaction
 
 
 def configure_routes(app):
