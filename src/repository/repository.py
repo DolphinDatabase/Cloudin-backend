@@ -1,19 +1,21 @@
-from utils.scheduler import scheduler
-from model.config import Config
+from ..utils import *
 
 
 class Repository:
-    verification_interval: int = 10
-    configuration: Config
-    files: list = []
+
+    DOWNLOAD_FOLDER_PATH:str
+
+    def __init__(self, token: str, verification_interval: int = 10):
+        self.verification_interval = verification_interval
+        self.token = token
 
     def list(self) -> list:
         pass
 
-    def upload(self, file: str) -> None:
+    def upload(self, file: any, origin: any) -> None:
         pass
 
-    def download(self, file: str) -> None:
+    def download(self, file: any) -> str:
         pass
 
     def start_verification(self) -> None:

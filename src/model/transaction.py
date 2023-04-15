@@ -1,5 +1,5 @@
-from .database import db
 import datetime
+from ..utils import *
 
 
 class Transaction(db.Model):
