@@ -82,7 +82,7 @@ class s3Service:
         os.remove(local_file_path)
         return {"title": fileName, "time": upload_time}
 
-    def remove_file(self, fileID: str, path: str):
+    def remove_file(self, fileID: str, fileName: str,path: str):
         tk = self.token.split(" ")
         s3 = boto3.client(
             "s3",

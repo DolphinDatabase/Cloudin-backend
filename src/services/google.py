@@ -99,3 +99,13 @@ class GoogleService:
         total_time = time.time() - start_time
         os.remove("./downloads/" + path + "/" + fileName)
         return {"title": fileName, "time": total_time}
+
+    def remove_file(self, fileID: str, fileName: str,path: str):
+        url = f"https://www.googleapis.com/drive/v3/files/{fileID}"
+        headers = {"Authorization": f"Bearer {self.token}"}
+        response = requests.delete(url, headers=headers)
+        if response.status_code == 204:
+            return {"message": "File successfully deleted."}
+        else:
+            raise Exception("Error deleting file Google")
+        
