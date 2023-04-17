@@ -35,7 +35,7 @@ def update_transaction(transaction: Transaction, status, files):
     return transaction
 
 
-def make_transaction(config:Config,originService,destinyService):
+def make_transaction(config: Config, originService, destinyService):
     transaction_data = []
     for f in originService.list_files_by_folder(config.originFolder):
         download = originService.download(f["id"], f["name"])

@@ -13,13 +13,11 @@ from .transaction import new_transaction, update_transaction, make_transaction
 def configure_routes(app):
     announcer = MessageAnnouncer()
 
-
     def format_sse(data: str, event=None) -> str:
         msg = f"data: {data}\n\n"
         if event is not None:
             msg = f"event: {event}\n{msg}"
         return msg
-
 
     @app.route("/listen", methods=["GET"])
     def listen():
@@ -30,7 +28,6 @@ def configure_routes(app):
                 yield msg
 
         return Response(stream(), mimetype="text/event-stream")
-
 
     @scheduler.scheduled_job("interval", seconds=20)
     def myFunction():
@@ -54,14 +51,13 @@ def configure_routes(app):
                         event="newTransaction",
                     )
                     announcer.announce(msg=msg)
-                    files = make_transaction(i,originService,destinyService)
+                    files = make_transaction(i, originService, destinyService)
                     transaction = update_transaction(transaction, "Concluido", files)
                     msg = format_sse(
                         data={"config": i.id, "transaction": schema.dump(transaction)},
                         event="updateTransaction",
                     )
                     announcer.announce(msg=msg)
-
 
     @app.route("/")
     def helloWorld():

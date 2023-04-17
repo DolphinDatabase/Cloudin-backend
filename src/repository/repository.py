@@ -2,8 +2,7 @@ from ..utils import *
 
 
 class Repository:
-
-    DOWNLOAD_FOLDER_PATH:str
+    DOWNLOAD_FOLDER_PATH: str
 
     def __init__(self, token: str, verification_interval: int = 10):
         self.verification_interval = verification_interval

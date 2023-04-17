@@ -10,11 +10,14 @@ class s3Service:
 
     def __init__(self, token):
         self.token = token
-    
+
     def files_by_folder(self, folder):
         tk = self.token.split(" ")
         s3 = boto3.client(
-            "s3", aws_access_key_id=tk[0], aws_secret_access_key=tk[1], region_name=tk[2]
+            "s3",
+            aws_access_key_id=tk[0],
+            aws_secret_access_key=tk[1],
+            region_name=tk[2],
         )
 
         files = s3.list_objects(Bucket=tk[3], Prefix=folder)
@@ -63,7 +66,7 @@ class s3Service:
         except Exception as e:
             return {"error": f"download error: {e}"}
 
-    def upload(self, fileName: str, path: str, folder:str):
+    def upload(self, fileName: str, path: str, folder: str):
         try:
             tk = self.token.split(" ")
             s3 = boto3.client(
@@ -78,7 +81,7 @@ class s3Service:
             s3.upload_file(
                 local_file_path,
                 tk[3],
-                folder+"/"+fileName,
+                folder + "/" + fileName,
                 ExtraArgs={"ContentType": content_type},
             )
             upload_time = time.time() - start_time
