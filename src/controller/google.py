@@ -50,6 +50,7 @@ def list_files():
         while next_page_token:
             response = requests.get(url, headers=headers, params=params)
             json_response = response.json()
+
             files.extend(json_response["files"])
             next_page_token = json_response.get("nextPageToken", None)
             params["pageToken"] = next_page_token
@@ -66,18 +67,18 @@ def list_folders():
         url = "https://www.googleapis.com/drive/v3/files"
         headers = {"Authorization": f"Bearer {token}"}
         params = {
-            "q": "mimeType='application/vnd.google.apps.folder' and trashed=false and 'root' in parent",
-            "fields": "nextPageToken,files(id,name)",
+            "q": "mimeType='application/vnd.google-apps.folder' and trashed=false",
+            "fields": "nextPageToken, files(id, name)",
             "pageSize": 1000,
         }
         folders = []
         next_page_token = True
         while next_page_token:
-            response = requests.get(url, hearders=headers, params=params)
+            response = requests.get(url, headers=headers, params=params)
             json_response = response.json()
             folders.extend(json_response["files"])
-            next_pag_token = json_response.get("nextPageToken", None)
-            params["page Token"] = next_pag_token
+            next_page_token = json_response.get("nextPageToken", None)
+            params["pageToken"] = next_page_token
             return make_response(jsonify({"result": folders}), 200)
     except Exception as e:
         return make_response(jsonify({"error": f"list folder error:{e}"}, 500))
