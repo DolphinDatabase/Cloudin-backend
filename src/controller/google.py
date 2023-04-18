@@ -57,28 +57,30 @@ def list_files():
     except Exception as e:
         return make_response(jsonify({"error": f"list files error: {e}"}), 500)
 
-#Rota da listagem de pasta do google drive cld-73
+
+# Rota da listagem de pasta do google drive cld-73
 @drivebp.route("/list/folder", strict_slashes=False)
 def list_folders():
     try:
         token = request.headers.get("token")
-        url="https://www.googleapis.com/drive/v3/files"
+        url = "https://www.googleapis.com/drive/v3/files"
         headers = {"Authorization": f"Bearer {token}"}
-        params ={"q": "mimeType='application/vnd.google.apps.folder' and trashed=false and 'root' in parent",
-                 "fields":"nextPageToken,files(id,name)",
-                 "pageSize":1000}
-        folders =[]
+        params = {
+            "q": "mimeType='application/vnd.google.apps.folder' and trashed=false and 'root' in parent",
+            "fields": "nextPageToken,files(id,name)",
+            "pageSize": 1000,
+        }
+        folders = []
         next_page_token = True
         while next_page_token:
-            response = requests.get(url,hearders=headers, params=params)
+            response = requests.get(url, hearders=headers, params=params)
             json_response = response.json()
             folders.extend(json_response["files"])
             next_pag_token = json_response.get("nextPageToken", None)
-            params["page Token" ] = next_pag_token
-            return make_response(jsonify({"result":folders}),200)
+            params["page Token"] = next_pag_token
+            return make_response(jsonify({"result": folders}), 200)
     except Exception as e:
-        return make_response(jsonify({"error":f"list folder error:{e}"},500))
-
+        return make_response(jsonify({"error": f"list folder error:{e}"}, 500))
 
 
 @drivebp.route("/download", strict_slashes=False)

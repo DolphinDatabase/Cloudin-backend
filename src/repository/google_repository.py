@@ -9,7 +9,6 @@ from .repository import Repository
 
 
 class GoogleDriveRepository(Repository):
-
     DOWNLOAD_FOLDER_PATH = "./downloads/google"
 
     def list(self) -> list:
@@ -32,15 +31,9 @@ class GoogleDriveRepository(Repository):
     def download(self, file) -> str:
         file_url = f"https://www.googleapis.com/drive/v3/files/{file.id}?alt=media"
 
-        headers = {
-            "Authorization": f"Bearer {self.token}"
-        }
+        headers = {"Authorization": f"Bearer {self.token}"}
 
-        response = requests.get(
-            file_url,
-            headers=headers,
-            stream=True
-        )
+        response = requests.get(file_url, headers=headers, stream=True)
 
         if not os.path.exists(self.DOWNLOAD_FOLDER_PATH):
             os.makedirs(self.DOWNLOAD_FOLDER_PATH)
@@ -55,7 +48,9 @@ class GoogleDriveRepository(Repository):
         return file.name
 
     def upload(self, file, origin: Repository) -> bool:
-        file_mimetype = mimetypes.MimeTypes().guess_type(f"{origin.DOWNLOAD_FOLDER_PATH}/{file}", strict=True)
+        file_mimetype = mimetypes.MimeTypes().guess_type(
+            f"{origin.DOWNLOAD_FOLDER_PATH}/{file}", strict=True
+        )
         file_size = os.stat(f"{origin.DOWNLOAD_FOLDER_PATH}/{file}").st_size
 
         url_upload = self.request_file_create(file, file_mimetype)
@@ -63,16 +58,9 @@ class GoogleDriveRepository(Repository):
         with open(f"{origin.DOWNLOAD_FOLDER_PATH}/{file}", "rb") as file:
             content = BytesIO(file.read())
 
-        headers = {
-            "Authorization": f"Bearer {self.token}",
-            "Content-Length": file_size
-        }
+        headers = {"Authorization": f"Bearer {self.token}", "Content-Length": file_size}
 
-        response = requests.put(
-            url_upload,
-            headers=headers,
-            data=content
-        )
+        response = requests.put(url_upload, headers=headers, data=content)
 
         if response not in (200, 201):
             return False
@@ -83,7 +71,7 @@ class GoogleDriveRepository(Repository):
     def request_file_create(self, file_name, mimetype):
         headers = {
             "Authorization": f"Bearer {self.token}",
-            "Content-Type": "application/json; charset=UTF-8"
+            "Content-Type": "application/json; charset=UTF-8",
         }
 
         data = {
@@ -95,7 +83,7 @@ class GoogleDriveRepository(Repository):
         response = requests.post(
             "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable",
             headers=headers,
-            data=json.dumps(data)
+            data=json.dumps(data),
         )
 
         if response.status_code == 200:

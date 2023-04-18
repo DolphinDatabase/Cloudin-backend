@@ -10,16 +10,16 @@ from ..utils.mymeType import getMymetype
 class GoogleService:
     token = ""
 
-    def __init__(self, refreshToken:str):
+    def __init__(self, refreshToken: str):
         data = {
-            "refresh_token":refreshToken,
-            "client_id":"532089225272-1im33klerc0hmvspgo6mh08aobithavt.apps.googleusercontent.com",
-            "client_secret":"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",
-            "grant_type":"refresh_token"
+            "refresh_token": refreshToken,
+            "client_id": "532089225272-1im33klerc0hmvspgo6mh08aobithavt.apps.googleusercontent.com",
+            "client_secret": "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",
+            "grant_type": "refresh_token",
         }
-        req = requests.post("https://oauth2.googleapis.com/token",json=data).json()
-        self.token = req['access_token']
-    
+        req = requests.post("https://oauth2.googleapis.com/token", json=data).json()
+        self.token = req["access_token"]
+
     def files_by_folder(self, folder):
         headers = {"Authorization": f"Bearer {self.token}"}
         params = {"q": f"'{folder}' in parents", "fields": "*"}

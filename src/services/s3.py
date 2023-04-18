@@ -10,11 +10,14 @@ class s3Service:
 
     def __init__(self, token):
         self.token = token
-    
+
     def files_by_folder(self, folder):
         tk = self.token.split(" ")
         s3 = boto3.client(
-            "s3", aws_access_key_id=tk[0], aws_secret_access_key=tk[1], region_name=tk[2]
+            "s3",
+            aws_access_key_id=tk[0],
+            aws_secret_access_key=tk[1],
+            region_name=tk[2],
         )
 
         files = s3.list_objects(Bucket=tk[3], Prefix=folder)
@@ -61,6 +64,7 @@ class s3Service:
         return {"title": fileName, "time": download_time, "size": file_size}
         
 
+ 
     def upload(self, fileName: str, path: str, folder:str):
         tk = self.token.split(" ")
         s3 = boto3.client(
@@ -95,6 +99,7 @@ class s3Service:
             s3.delete_object(Bucket=tk[3], Key=path+'/'+fileID)
             print ("sucess removal")
             return {"message": f"File {fileID} removed successfully."}
+ 
         except Exception as e:
             print(e)
             return {"error": f"File removal error: {e}"}

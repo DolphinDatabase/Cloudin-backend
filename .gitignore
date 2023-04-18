@@ -11,3 +11,4 @@ access_token.txt
 client_secret.json
 /mysql-data
 /.idea
+**/myenv

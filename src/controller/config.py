@@ -7,6 +7,7 @@ from ..schema import *
 
 config_blueprint = Blueprint("config", __name__, url_prefix="/config")
 
+
 @config_blueprint.route("/", methods=["GET"], strict_slashes=False)
 def list_config():
     schema = ConfigSchema(many=True)
