@@ -45,7 +45,7 @@ class s3Service:
         except Exception as e:
             return {"error": f"list files error: {e}"}
 
-    def download(self, fileID: str, fileName: str):     
+    def download(self, fileID: str, fileName: str):
         tk = self.token.split(" ")
         s3 = boto3.client(
             "s3",
@@ -62,10 +62,8 @@ class s3Service:
         file_size = os.path.getsize(local_file_path)
         download_time = time.time() - start_time
         return {"title": fileName, "time": download_time, "size": file_size}
-        
 
- 
-    def upload(self, fileName: str, path: str, folder:str):
+    def upload(self, fileName: str, path: str, folder: str):
         tk = self.token.split(" ")
         s3 = boto3.client(
             "s3",
@@ -79,14 +77,14 @@ class s3Service:
         s3.upload_file(
             local_file_path,
             tk[3],
-            folder+"/"+fileName,
+            folder + "/" + fileName,
             ExtraArgs={"ContentType": content_type},
         )
         upload_time = time.time() - start_time
         os.remove(local_file_path)
         return {"title": fileName, "time": upload_time}
 
-    def remove_file(self, fileID: str, fileName: str,path: str):
+    def remove_file(self, fileID: str, fileName: str, path: str):
         tk = self.token.split(" ")
         s3 = boto3.client(
             "s3",
@@ -94,12 +92,8 @@ class s3Service:
             aws_secret_access_key=tk[1],
             region_name=tk[2],
         )
-        print(path+'/'+fileID)
         try:
-            s3.delete_object(Bucket=tk[3], Key=path+'/'+fileID)
-            print ("sucess removal")
-            return {"message": f"File {fileID} removed successfully."}
- 
-        except Exception as e:
-            print(e)
-            return {"error": f"File removal error: {e}"}
+            s3.delete_object(Bucket=tk[3], Key=fileID)
+            return {"message": "File successfully deleted."}
+        except:
+            raise Exception("Error deleting file Google")

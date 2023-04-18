@@ -41,12 +41,14 @@ def make_transaction(config: Config, originService, destinyService):
         try:
             download = originService.download(f["id"], f["name"])
         except:
-            return 
+            return
         try:
-            upload = destinyService.upload(f["name"], config.origin, config.destinyFolder)
+            upload = destinyService.upload(
+                f["name"], config.origin, config.destinyFolder
+            )
             download["time"] += upload["time"]
             transaction_data.append(download)
-            originService.remove_file(f["id"],f["name"], config.originFolder)            
+            originService.remove_file(f["id"], f["name"], config.originFolder)
         except:
             pass
     return transaction_data
