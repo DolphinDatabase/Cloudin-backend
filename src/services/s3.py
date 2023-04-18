@@ -45,47 +45,61 @@ class s3Service:
         except Exception as e:
             return {"error": f"list files error: {e}"}
 
-    def download(self, fileID: str, fileName: str):
-        try:
-            tk = self.token.split(" ")
-            s3 = boto3.client(
-                "s3",
-                aws_access_key_id=tk[0],
-                aws_secret_access_key=tk[1],
-                region_name=tk[2],
-            )
-            if not os.path.exists("./downloads/s3"):
-                os.makedirs("./downloads/s3")
-            local_folder_path = os.path.join(os.getcwd(), "downloads", "s3")
-            local_file_path = os.path.join(local_folder_path, fileName)
-            start_time = time.time()
-            s3.download_file(tk[3], fileID, local_file_path)
-            file_size = os.path.getsize(local_file_path)
-            download_time = time.time() - start_time
-            return {"title": fileName, "time": download_time, "size": file_size}
-        except Exception as e:
-            return {"error": f"download error: {e}"}
+    def download(self, fileID: str, fileName: str):     
+        tk = self.token.split(" ")
+        s3 = boto3.client(
+            "s3",
+            aws_access_key_id=tk[0],
+            aws_secret_access_key=tk[1],
+            region_name=tk[2],
+        )
+        if not os.path.exists("./downloads/s3"):
+            os.makedirs("./downloads/s3")
+        local_folder_path = os.path.join(os.getcwd(), "downloads", "s3")
+        local_file_path = os.path.join(local_folder_path, fileName)
+        start_time = time.time()
+        s3.download_file(tk[3], fileID, local_file_path)
+        file_size = os.path.getsize(local_file_path)
+        download_time = time.time() - start_time
+        return {"title": fileName, "time": download_time, "size": file_size}
+        
 
-    def upload(self, fileName: str, path: str, folder: str):
+ 
+    def upload(self, fileName: str, path: str, folder:str):
+        tk = self.token.split(" ")
+        s3 = boto3.client(
+            "s3",
+            aws_access_key_id=tk[0],
+            aws_secret_access_key=tk[1],
+            region_name=tk[2],
+        )
+        local_file_path = os.path.join(os.getcwd(), "downloads", path, fileName)
+        content_type = getMymetype(local_file_path)[0]
+        start_time = time.time()
+        s3.upload_file(
+            local_file_path,
+            tk[3],
+            folder+"/"+fileName,
+            ExtraArgs={"ContentType": content_type},
+        )
+        upload_time = time.time() - start_time
+        os.remove(local_file_path)
+        return {"title": fileName, "time": upload_time}
+
+    def remove_file(self, fileID: str, fileName: str,path: str):
+        tk = self.token.split(" ")
+        s3 = boto3.client(
+            "s3",
+            aws_access_key_id=tk[0],
+            aws_secret_access_key=tk[1],
+            region_name=tk[2],
+        )
+        print(path+'/'+fileID)
         try:
-            tk = self.token.split(" ")
-            s3 = boto3.client(
-                "s3",
-                aws_access_key_id=tk[0],
-                aws_secret_access_key=tk[1],
-                region_name=tk[2],
-            )
-            local_file_path = os.path.join(os.getcwd(), "downloads", path, fileName)
-            content_type = getMymetype(local_file_path)[0]
-            start_time = time.time()
-            s3.upload_file(
-                local_file_path,
-                tk[3],
-                folder + "/" + fileName,
-                ExtraArgs={"ContentType": content_type},
-            )
-            upload_time = time.time() - start_time
-            os.remove(local_file_path)
-            return {"title": fileName, "time": upload_time}
+            s3.delete_object(Bucket=tk[3], Key=path+'/'+fileID)
+            print ("sucess removal")
+            return {"message": f"File {fileID} removed successfully."}
+ 
         except Exception as e:
-            return {"error": f"upload error: {e}"}
+            print(e)
+            return {"error": f"File removal error: {e}"}
