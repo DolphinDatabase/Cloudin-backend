@@ -22,20 +22,18 @@ class GoogleService:
 
     def files_by_folder(self, folder):
         headers = {"Authorization": f"Bearer {self.token}"}
-        params = {"q": f"'{folder}' in parents", "fields": "*"}
+        params = {"q": f"'{folder}' in parents and trashed = false", "fields": "*"}
         req = requests.get(
             "https://www.googleapis.com/drive/v3/files", headers=headers, params=params
-        )      
+        )
         num_of_files = len(req.json()["files"]) - 1
         return num_of_files
-
-
 
     def list_files_by_folder(self, folder: str):
         try:
             headers = {"Authorization": f"Bearer {self.token}"}
             params = {
-                "q": f"'{folder}' in parents",
+                "q": f"'{folder}' in parents and trashed = false",
                 "pageSize": 1000,
                 "fields": "nextPageToken, files(id, name)",
             }
@@ -102,7 +100,7 @@ class GoogleService:
         os.remove("./downloads/" + path + "/" + fileName)
         return {"title": fileName, "time": total_time}
 
-    def remove_file(self, fileID: str, fileName: str,path: str):
+    def remove_file(self, fileID: str, fileName: str, path: str):
         url = f"https://www.googleapis.com/drive/v3/files/{fileID}"
         headers = {"Authorization": f"Bearer {self.token}"}
         response = requests.delete(url, headers=headers)
@@ -110,4 +108,3 @@ class GoogleService:
             return {"message": "File successfully deleted."}
         else:
             raise Exception("Error deleting file Google")
-        

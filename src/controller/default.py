@@ -29,7 +29,7 @@ def configure_routes(app):
 
         return Response(stream(), mimetype="text/event-stream")
 
-    @scheduler.scheduled_job("interval", seconds=20)
+    @scheduler.scheduled_job("interval", seconds=60)
     def myFunction():
         with app.app_context():
             schema = TransactionSchema()
@@ -44,7 +44,6 @@ def configure_routes(app):
                 elif i.destiny == "s3":
                     destinyService = s3Service(i.destinyToken)
                 new_files = originService.files_by_folder(i.originFolder)
-
                 if new_files > 0:
                     transaction = new_transaction(i)
                     msg = format_sse(
@@ -52,14 +51,15 @@ def configure_routes(app):
                         event="newTransaction",
                     )
                     announcer.announce(msg=msg)
- 
-                    files = make_transaction(i,originService,destinyService)
+
+                    files = make_transaction(i, originService, destinyService)
                     if not files:
                         transaction = update_transaction(transaction, "Erro", files)
                     else:
-                        transaction = update_transaction(transaction, "Concluido", files)
+                        transaction = update_transaction(
+                            transaction, "Concluido", files
+                        )
 
- 
                     msg = format_sse(
                         data={"config": i.id, "transaction": schema.dump(transaction)},
                         event="updateTransaction",
