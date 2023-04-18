@@ -46,10 +46,8 @@ def configure_routes(app):
                     destinyService = GoogleService(i.destinyToken)
                 elif i.destiny == "s3":
                     destinyService = s3Service(i.destinyToken)
-                print("aquivo default antes da originService files_by_folder")
                 new_files = originService.files_by_folder(i.originFolder)
-                print("new_files e igual a")
-                print(new_files)
+
                 if new_files > 0:
                     transaction = new_transaction(i)
                     msg = format_sse(

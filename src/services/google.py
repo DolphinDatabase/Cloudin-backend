@@ -21,15 +21,12 @@ class GoogleService:
         self.token = req['access_token']
     
     def files_by_folder(self, folder):
-        print ("files_by_folder")
         headers = {"Authorization": f"Bearer {self.token}"}
         params = {"q": f"'{folder}' in parents", "fields": "*"}
         req = requests.get(
             "https://www.googleapis.com/drive/v3/files", headers=headers, params=params
         )      
         num_of_files = len(req.json()["files"]) - 1
-        print(num_of_files)
-        print("saindo da funcao files_by_folder")
         return num_of_files
 
 
@@ -106,8 +103,6 @@ class GoogleService:
         return {"title": fileName, "time": total_time}
 
     def remove_file(self, fileID: str, fileName: str,path: str):
-        print("remove_file")
-        print(fileID)
         url = f"https://www.googleapis.com/drive/v3/files/{fileID}"
         headers = {"Authorization": f"Bearer {self.token}"}
         response = requests.delete(url, headers=headers)
