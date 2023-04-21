@@ -21,8 +21,8 @@ def filesByFolderS3(token, folder):
     return num_of_files
 
 
-@s3_blueprint.route("/list/folders", strict_slashes=False)
-def listFolders():
+@s3_blueprint.route("/list/folder", strict_slashes=False)
+def list_folders():
     token = request.headers.get("token")
     tk = token.split(" ")
 
@@ -35,8 +35,8 @@ def listFolders():
     # Extrai as informações dos objetos e os retorna
     obj_list = []
     for i in response.get("CommonPrefixes"):
-        obj_list.append(i["Prefix"].replace("/", ""))
-    return make_response(jsonify(obj_list), 200)
+        obj_list.append({'id':i["Prefix"].replace("/", ""),'name':i["Prefix"].replace("/", "")})
+    return make_response(jsonify({'result':obj_list}), 200)
 
 
 @s3_blueprint.route("/list", strict_slashes=False)
