@@ -5,21 +5,41 @@ import time
 import mimetypes
 
 
-s3bp = Blueprint("s3", __name__, url_prefix="/s3")
+s3_blueprint = Blueprint("s3", __name__, url_prefix="/s3")
 
-
-# Define as credenciais da AWS
-# aws_access_key_id = 'AKIA4VVR7RPQYTILT3MO'
-# aws_secret_access_key = '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'
-# aws_region_name = 'us-east-1'
-# s3_bucket_name = 'cloudin-bucket'
-
-
-# Define caminho para download
 FILE_PATH = "downloads/s3"
 
 
-@s3bp.route("/list", strict_slashes=False)
+def filesByFolderS3(token, folder):
+    tk = token.split(" ")
+    s3 = boto3.client(
+        "s3", aws_access_key_id=tk[0], aws_secret_access_key=tk[1], region_name=tk[2]
+    )
+
+    files = s3.list_objects(Bucket=tk[3], Prefix=folder)
+    num_of_files = len(files["Contents"]) - 1
+    return num_of_files
+
+
+@s3_blueprint.route("/list/folder", strict_slashes=False)
+def list_folders():
+    token = request.headers.get("token")
+    tk = token.split(" ")
+
+    s3 = boto3.client(
+        "s3", aws_access_key_id=tk[0], aws_secret_access_key=tk[1], region_name=tk[2]
+    )
+
+    # Lista todos os objetos do bucket
+    response = s3.list_objects(Bucket=tk[3], Delimiter="/")
+    # Extrai as informações dos objetos e os retorna
+    obj_list = []
+    for i in response.get("CommonPrefixes"):
+        obj_list.append({'id':i["Prefix"].replace("/", ""),'name':i["Prefix"].replace("/", "")})
+    return make_response(jsonify({'result':obj_list}), 200)
+
+
+@s3_blueprint.route("/list", strict_slashes=False)
 def list():
     token = request.headers.get("token")
     tk = token.split(" ")
@@ -42,7 +62,7 @@ def list():
     return make_response(jsonify(response_body), 200)
 
 
-@s3bp.route("/download/<file_name>", strict_slashes=False)
+@s3_blueprint.route("/download/<file_name>", strict_slashes=False)
 def download_file(file_id, file_name, token):
     try:
         tk = token.split(" ")
@@ -68,7 +88,7 @@ def download_file(file_id, file_name, token):
         return make_response(jsonify(response_body), 400)
 
 
-@s3bp.route("/upload/<file_name>", strict_slashes=False)
+@s3_blueprint.route("/upload/<file_name>", strict_slashes=False)
 def upload_file(file_name, token, origin):
     try:
         tk = token.split(" ")

@@ -1,12 +1,57 @@
 from flask import Blueprint, request, jsonify, make_response
-from ..model.database import db
-from ..schema.transactionSchema import TransactionSchema
 import importlib.util
 
-from ..model.transaction import Transaction
-from ..model.file import File
+from ..model import *
+from ..schema import *
+from ..utils import *
+
+from ..services.google import GoogleService
+from ..services.s3 import s3Service
 
 tbp = Blueprint("transaction", __name__, url_prefix="/transaction")
+
+
+def new_transaction(config: Config):
+    transaction = Transaction()
+    transaction.status = "Em andamento"
+    config.transaction.append(transaction)
+    db.session.add(transaction)
+    db.session.add(config)
+    db.session.commit()
+    return transaction
+
+
+def update_transaction(transaction: Transaction, status, files):
+    transaction.status = status
+    for f in files:
+        file = File()
+        file.name = f["title"]
+        file.time = f["time"]
+        file.size = f["size"]
+        transaction.file.append(file)
+        db.session.add(file)
+    db.session.add(transaction)
+    db.session.commit()
+    return transaction
+
+
+def make_transaction(config: Config, originService, destinyService):
+    transaction_data = []
+    for f in originService.list_files_by_folder(config.originFolder):
+        try:
+            download = originService.download(f["id"], f["name"])
+        except:
+            return
+        try:
+            upload = destinyService.upload(
+                f["name"], config.origin, config.destinyFolder
+            )
+            download["time"] += upload["time"]
+            transaction_data.append(download)
+            originService.remove_file(f["id"], f["name"], config.originFolder)
+        except:
+            pass
+    return transaction_data
 
 
 @tbp.route("/<id>", methods=["GET"], strict_slashes=False)
@@ -38,7 +83,7 @@ def create_transaction():
     concluido = True
     # execute download
     origin = importlib.util.spec_from_file_location(
-        body["origin"], "./src/blueprint/" + body["origin"] + ".py"
+        body["origin"], "./src/controller/" + body["origin"] + ".py"
     ).loader.load_module()
     download = getattr(origin, "download_file")
     for f in body["files"]:
@@ -55,7 +100,7 @@ def create_transaction():
     # execute upload
     if concluido:
         destiny = importlib.util.spec_from_file_location(
-            body["destiny"], "./src/blueprint/" + body["destiny"] + ".py"
+            body["destiny"], "./src/controller/" + body["destiny"] + ".py"
         ).loader.load_module()
         upload = getattr(destiny, "upload_file")
         for f in body["files"]:
