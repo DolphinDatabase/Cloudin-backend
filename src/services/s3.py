@@ -46,43 +46,49 @@ class s3Service:
             return {"error": f"list files error: {e}"}
 
     def download(self, fileID: str, fileName: str):
-        tk = self.token.split(" ")
-        s3 = boto3.client(
-            "s3",
-            aws_access_key_id=tk[0],
-            aws_secret_access_key=tk[1],
-            region_name=tk[2],
-        )
-        if not os.path.exists("./downloads/s3"):
-            os.makedirs("./downloads/s3")
-        local_folder_path = os.path.join(os.getcwd(), "downloads", "s3")
-        local_file_path = os.path.join(local_folder_path, fileName)
-        start_time = time.time()
-        s3.download_file(tk[3], fileID, local_file_path)
-        file_size = os.path.getsize(local_file_path)
-        download_time = time.time() - start_time
-        return {"title": fileName, "time": download_time, "size": file_size}
+        try:
+            tk = self.token.split(" ")
+            s3 = boto3.client(
+                "s3",
+                aws_access_key_id=tk[0],
+                aws_secret_access_key=tk[1],
+                region_name=tk[2],
+            )
+            if not os.path.exists("./downloads/s3"):
+                os.makedirs("./downloads/s3")
+            local_folder_path = os.path.join(os.getcwd(), "downloads", "s3")
+            local_file_path = os.path.join(local_folder_path, fileName)
+            start_time = time.time()
+            s3.download_file(tk[3], fileID, local_file_path)
+            file_size = os.path.getsize(local_file_path)
+            download_time = time.time() - start_time
+            return {"title": fileName, "time": download_time, "size": file_size}
+        except:
+            raise Exception("S3 download error")
 
     def upload(self, fileName: str, path: str, folder: str):
-        tk = self.token.split(" ")
-        s3 = boto3.client(
-            "s3",
-            aws_access_key_id=tk[0],
-            aws_secret_access_key=tk[1],
-            region_name=tk[2],
-        )
-        local_file_path = os.path.join(os.getcwd(), "downloads", path, fileName)
-        content_type = getMymetype(local_file_path)[0]
-        start_time = time.time()
-        s3.upload_file(
-            local_file_path,
-            tk[3],
-            folder + "/" + fileName,
-            ExtraArgs={"ContentType": content_type},
-        )
-        upload_time = time.time() - start_time
-        os.remove(local_file_path)
-        return {"title": fileName, "time": upload_time}
+        try:
+            tk = self.token.split(" ")
+            s3 = boto3.client(
+                "s3",
+                aws_access_key_id=tk[0],
+                aws_secret_access_key=tk[1],
+                region_name=tk[2],
+            )
+            local_file_path = os.path.join(os.getcwd(), "downloads", path, fileName)
+            content_type = getMymetype(local_file_path)[0]
+            start_time = time.time()
+            s3.upload_file(
+                local_file_path,
+                tk[3],
+                folder + "/" + fileName,
+                ExtraArgs={"ContentType": content_type},
+            )
+            upload_time = time.time() - start_time
+            os.remove(local_file_path)
+            return {"title": fileName, "time": upload_time}
+        except:
+            raise Exception("S3 upload error")
 
     def remove_file(self, fileID: str, fileName: str, path: str):
         tk = self.token.split(" ")
@@ -96,4 +102,4 @@ class s3Service:
             s3.delete_object(Bucket=tk[3], Key=fileID)
             return {"message": "File successfully deleted."}
         except:
-            raise Exception("Error deleting file Google")
+            raise Exception("S3 delete error")
