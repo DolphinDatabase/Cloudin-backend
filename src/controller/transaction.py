@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify, make_response
 import importlib.util
+import os
 
 from ..model import *
 from ..schema import *
@@ -41,6 +42,9 @@ def make_transaction(config: Config, originService, destinyService):
         try:
             download = originService.download(f["id"], f["name"])
         except:
+            for filename in os.listdir("./downloads/"+config.origin):
+                file_path = os.path.join("./downloads/"+config.origin, filename)
+                os.remove(file_path)
             return
         try:
             upload = destinyService.upload(
@@ -50,7 +54,10 @@ def make_transaction(config: Config, originService, destinyService):
             transaction_data.append(download)
             originService.remove_file(f["id"], f["name"], config.originFolder)
         except:
-            pass
+            for filename in os.listdir("./downloads/"+config.origin):
+                file_path = os.path.join("./downloads/"+config.origin, filename)
+                os.remove(file_path)
+            return
     return transaction_data
 
 
