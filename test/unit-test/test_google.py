@@ -4,7 +4,7 @@ import pytest
 
 from unittest import mock
 from src.app import app
-from src.blueprint.google import download_file, upload_file
+from src.controller.google import download_file, upload_file
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
