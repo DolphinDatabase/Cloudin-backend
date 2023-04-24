@@ -1,4 +1,3 @@
-from http.client import HTTPException
 from flask import Blueprint, jsonify, request, make_response
 import requests
 import time
@@ -7,7 +6,6 @@ import mimetypes
 import json
 from io import BytesIO
 
-# from ..utils.google_drive import google_drive
 
 drivebp = Blueprint("google", __name__, url_prefix="/google")
 
@@ -30,6 +28,16 @@ def getMymetype(url):
     return mimetypes.MimeTypes().guess_type(url, strict=True)
 
 
+def filesByFolderGoogle(token, folder):
+    headers = {"Authorization": f"Bearer {token}"}
+    params = {"q": f"'{folder}' in parents", "fields": "*"}
+    req = requests.get(
+        "https://www.googleapis.com/drive/v3/files", headers=headers, params=params
+    )
+    num_of_files = len(req.json()["files"]) - 1
+    return num_of_files
+
+
 @drivebp.route("/list", strict_slashes=False)
 def list_files():
     try:
@@ -42,12 +50,38 @@ def list_files():
         while next_page_token:
             response = requests.get(url, headers=headers, params=params)
             json_response = response.json()
+
             files.extend(json_response["files"])
             next_page_token = json_response.get("nextPageToken", None)
             params["pageToken"] = next_page_token
         return make_response(jsonify({"result": files}), 200)
     except Exception as e:
         return make_response(jsonify({"error": f"list files error: {e}"}), 500)
+
+
+# Rota da listagem de pasta do google drive cld-73
+@drivebp.route("/list/folder", strict_slashes=False)
+def list_folders():
+    try:
+        token = request.headers.get("token")
+        url = "https://www.googleapis.com/drive/v3/files"
+        headers = {"Authorization": f"Bearer {token}"}
+        params = {
+            "q": "mimeType='application/vnd.google-apps.folder' and trashed=false",
+            "fields": "nextPageToken, files(id, name)",
+            "pageSize": 1000,
+        }
+        folders = []
+        next_page_token = True
+        while next_page_token:
+            response = requests.get(url, headers=headers, params=params)
+            json_response = response.json()
+            folders.extend(json_response["files"])
+            next_page_token = json_response.get("nextPageToken", None)
+            params["pageToken"] = next_page_token
+            return make_response(jsonify({"result": folders}), 200)
+    except Exception as e:
+        return make_response(jsonify({"error": f"list folder error:{e}"}, 500))
 
 
 @drivebp.route("/download", strict_slashes=False)

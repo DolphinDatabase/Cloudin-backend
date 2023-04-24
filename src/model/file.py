@@ -1,5 +1,5 @@
-from .database import db
 from sqlalchemy.dialects.mysql import TIME
+from ..utils import *
 
 
 class File(db.Model):
