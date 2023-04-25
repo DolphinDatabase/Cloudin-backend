@@ -1,0 +1,18 @@
+{
+    "body": {
+        "origin": "google",
+        "destiny": "s3",
+        "files": [
+            {
+                "file_id": "1oT5UUoKJb7Qktt8k7DVbVban6jazF3f5MVgss86t2hY",
+                "file_name": "Seminário de S.O"
+            }
+        ]
+    },
+    "headers": {
+        "application": "186020",
+        "destiny_token": "AKIA4VVR7RPQYTILT3MO LXYAbeTX6zwfoCdGh4LiAZVEjPwEMvC6ICEBSnDi us-east-1 cloudin-bucket",
+        "origin_token": "ya29.a0Ael9sCMuNtikJKrGqFAvNIv1H-EKfmmwkVOs4vGwsP0z9iYaqabcw9cbxLK5pCNRaIK87KYGJU3p4Ck645U6BMhwKvXmxKTdlystnO5FfRjSXxyXuu0R7hBm6HT9yM0-enpXEIfE-lKj3kkI3aku40t4NNfgaCgYKAagSARESFQF4udJhARAgGaIolxeS163z12K",
+        "Content-Type": "application/json"
+    }
+}

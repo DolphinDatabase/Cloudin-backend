@@ -1,6 +1,7 @@
 from ..utils import *
 
 
+
 class Config(db.Model):
     __tablename__ = "config"
     id = db.Column("cfg_id", db.Integer, primary_key=True)

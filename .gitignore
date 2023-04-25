@@ -10,5 +10,6 @@ __pycache__/
 access_token.txt
 client_secret.json
 /mysql-data
+/.pytest_cache
 /.idea
 **/myenv
