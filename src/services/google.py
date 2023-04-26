@@ -26,7 +26,7 @@ class GoogleService:
         req = requests.get(
             "https://www.googleapis.com/drive/v3/files", headers=headers, params=params
         )
-        num_of_files = len(req.json()["files"]) - 1
+        num_of_files = len(req.json()["files"])
         return num_of_files
 
     def list_files_by_folder(self, folder: str):
