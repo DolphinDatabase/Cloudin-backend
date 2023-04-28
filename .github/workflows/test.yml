@@ -25,7 +25,7 @@ jobs:
                   ./../cleanContainer.sh
                   docker build --tag cloudin-backend .
                   docker run -d -p 5000:5000 --name cloudin-test cloudin-backend 
-                  docker exec -it cloudin-test python -m pytest test/unit-test/test_google.py
+                  docker exec -itd cloudin-test python -m pytest test/unit-test/test_google.py
                   ./../cleanContainer.sh
     - name: Push to docker hub
       if: ${{ success() }}
