@@ -1,0 +1,19 @@
+name: Test
+on:
+  pull_request:
+      branches: 
+       - dev
+      types: [closed]
+jobs:
+  test:
+    if: ${{ github.event.pull_request.merged }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Build Docker image
+      run: |
+        docker-compose build
+    - name: Run tests
+      run: |
+        docker-compose run --rm web python -m pytest test/unit-test/test_google.py
