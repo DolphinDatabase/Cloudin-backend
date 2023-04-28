@@ -15,4 +15,3 @@ jobs:
     - name: Run tests
       run: |
         docker-compose run --rm test 
-        docker exec -it test python -m pytest test/unit-test/test_google.py
