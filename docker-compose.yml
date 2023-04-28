@@ -15,6 +15,7 @@ services:
       - "3307:3306"
   test:
     build: 
+      context: .
       dockerfile: test/Dockerfile
     container_name: cloudin-test
     ports:
