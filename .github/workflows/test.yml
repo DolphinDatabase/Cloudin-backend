@@ -13,9 +13,7 @@ jobs:
       uses: actions/checkout@v2
     - name: Build Docker image
       run: |
-        docker-compose build mysql
         docker-compose build test
     - name: Run tests
       run: |
-        docker-compose run --rm mysql 
         docker-compose run --rm test 
