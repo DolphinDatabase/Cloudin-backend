@@ -1,42 +1,8 @@
 version: "3.3"
 
 services:
-
-  prometheus:
-    image: prom/prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ${PWD}/prometheus.yml:/etc/prometheus/prometheus.yml
-
-  grafana:
-    hostname: grafana
-    image: grafana/grafana
-    ports:
-      - 3000:3000
-
-  mysql:
-    image: mysql:latest
+  web:
+    image: pdrmottas/cloudin:latest
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: example
-      MYSQL_DATABASE: cloudin
-      MYSQL_USER: dbuser
-      MYSQL_PASSWORD: dbuser
-    volumes:
-      - ./mysql-data:/var/lib/mysql
     ports:
-      - "3307:3306"
-
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    restart: always
-    depends_on:
-      - mysql
-      - prometheus
-    ports:
-      - "5000:5000"
-    environment:
-      - SQLALCHEMY_DATABASE_URI=mysql://dbuser:dbuser@mysql:3306/cloudin
+      - 5000:5000
