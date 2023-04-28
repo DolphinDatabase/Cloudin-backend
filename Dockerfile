@@ -3,5 +3,5 @@ COPY ./requirements.txt /app/requirements.txt
 WORKDIR /app
 RUN pip install -r requirements.txt
 COPY . /app
-ENTRYPOINT [ "pytest" ]
-CMD [ "test/unit-test/test_google.py"]
+ENTRYPOINT [ "python" ]
+CMD [ "-m","pytest","test/unit-test/test_google.py"]
