@@ -42,8 +42,8 @@ def make_transaction(config: Config, originService, destinyService):
         try:
             download = originService.download(f["id"], f["name"])
         except:
-            for filename in os.listdir("./downloads/"+config.origin):
-                file_path = os.path.join("./downloads/"+config.origin, filename)
+            for filename in os.listdir("./downloads/" + config.origin):
+                file_path = os.path.join("./downloads/" + config.origin, filename)
                 os.remove(file_path)
             return
         try:
@@ -54,8 +54,8 @@ def make_transaction(config: Config, originService, destinyService):
             transaction_data.append(download)
             originService.remove_file(f["id"], f["name"], config.originFolder)
         except:
-            for filename in os.listdir("./downloads/"+config.origin):
-                file_path = os.path.join("./downloads/"+config.origin, filename)
+            for filename in os.listdir("./downloads/" + config.origin):
+                file_path = os.path.join("./downloads/" + config.origin, filename)
                 os.remove(file_path)
             return
     return transaction_data
