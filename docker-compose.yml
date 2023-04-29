@@ -25,5 +25,9 @@ services:
   web:
     image: pdrmottas/cloudin:latest
     restart: always
+    depends_on:
+      - mysql
     ports:
       - 5000:5000
+    environment:
+      - SQLALCHEMY_DATABASE_URI=mysql://dbuser:dbuser@mysql:3306/cloudin
