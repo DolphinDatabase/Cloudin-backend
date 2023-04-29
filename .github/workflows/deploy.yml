@@ -19,7 +19,6 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
                   cd /home/ec2-user/Cloudin-backend
-                  git checkout main
                   git pull
                   docker-compose build mysql
                   docker-compose build web
