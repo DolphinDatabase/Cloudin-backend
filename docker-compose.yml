@@ -1,7 +1,6 @@
 version: "3.3"
 
 services:
-
   mysql:
     image: mysql:latest
     restart: always
@@ -14,3 +13,13 @@ services:
       - ./mysql-data:/var/lib/mysql
     ports:
       - "3307:3306"
+      
+  web:
+    image: pdrmottas/cloudin:latest
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - 5000:5000
+    environment:
+      - SQLALCHEMY_DATABASE_URI=mysql://dbuser:dbuser@mysql:3306/cloudin
