@@ -5,6 +5,7 @@ import json
 
 from io import BytesIO
 from ..utils.mymeType import getMymetype
+from ..exception.exceptions import StorageAuthorizationException, StorageErrorException
 
 
 class GoogleService:
@@ -17,7 +18,9 @@ class GoogleService:
             "client_secret": "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",
             "grant_type": "refresh_token",
         }
+
         req = requests.post("https://oauth2.googleapis.com/token", json=data).json()
+
         self.token = req["access_token"]
 
     def files_by_folder(self, folder):
@@ -26,7 +29,9 @@ class GoogleService:
         req = requests.get(
             "https://www.googleapis.com/drive/v3/files", headers=headers, params=params
         )
+
         num_of_files = len(req.json()["files"])
+
         return num_of_files
 
     def list_files_by_folder(self, folder: str):
@@ -57,6 +62,7 @@ class GoogleService:
             response = requests.get(
                 file_url, headers={"Authorization": f"Bearer {self.token}"}, stream=True
             )
+            
             if not os.path.exists("./downloads/google"):
                 os.makedirs("./downloads/google")
 
@@ -70,7 +76,7 @@ class GoogleService:
             file_size = os.path.getsize(output_file)
             return {"title": fileName, "time": total_time, "size": file_size}
         except:
-            raise Exception("Google download error")
+            raise StorageErrorException("Google download error")
 
     def upload(self, fileName: str, path: str, folder: str):
         try:
@@ -104,7 +110,7 @@ class GoogleService:
             os.remove("./downloads/" + path + "/" + fileName)
             return {"title": fileName, "time": total_time}
         except:
-            raise Exception("Google upload error")
+            raise StorageErrorException("Google upload error")
 
     def remove_file(self, fileID: str, fileName: str, path: str):
         url = f"https://www.googleapis.com/drive/v3/files/{fileID}"
@@ -113,4 +119,4 @@ class GoogleService:
         if response.status_code == 204:
             return {"message": "File successfully deleted."}
         else:
-            raise Exception("Google delete error")
+            raise StorageErrorException("Google delete error")

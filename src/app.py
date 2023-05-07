@@ -4,7 +4,8 @@ import os
 from .utils import *
 from .controller import *
 
-from .exception.exceptions import config_error
+from .exception.exceptions import configure_errors_handlers
+
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://backend:api5sem@ec2-54-91-130-106.compute-1.amazonaws.com:3306/cloudin'
@@ -30,4 +31,4 @@ app.register_blueprint(drivebp)
 app.register_blueprint(config_blueprint)
 
 configure_routes(app)
-config_error(app)
+configure_errors_handlers(app)

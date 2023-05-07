@@ -1,19 +1,43 @@
 from flask import json
 
 
-def config_error(app):
-    @app.errorhandler(Exception)
-    def handle_exception(e):
-        """Return JSON instead of HTML for HTTP errors."""
-        # start with the correct headers and status code from the error
-        response = e.get_response()
-        # replace the body with JSON
+class StorageErrorException(Exception):
+    code = 400
+    description = "Erro de requisição para o storage"
+
+
+class StorageAuthorizationException(Exception):
+    code = 403
+    descritption = "Erro de autorização ou autenticação"
+
+
+def configure_errors_handlers(app):
+    @app.errorhandler(StorageAuthorizationException)
+    def handle_storage_authorization_exception(exception):
+        response = exception.get_response()
         response.data = json.dumps(
             {
-                "code": e.code,
-                "name": e.name,
-                "description": e.description,
+                "code": exception.code,
+                "name": exception.name,
+                "description": exception.description,
             }
         )
+
         response.content_type = "application/json"
+
+        return response
+
+    @app.errorhandler(StorageErrorException)
+    def handle_storage_error_exception(exception):
+        response = exception.get_response()
+        response.data = json.dumps(
+            {
+                "code": exception.code,
+                "name": exception.name,
+                "description": exception.description,
+            }
+        )
+
+        response.content_type = "application/json"
+
         return response
