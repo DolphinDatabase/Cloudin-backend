@@ -8,7 +8,7 @@ class StorageErrorException(Exception):
 
 class StorageAuthorizationException(Exception):
     code = 403
-    descritption = "Erro de autorização ou autenticação"
+    description = "Erro de autorização ou autenticação"
 
 
 def configure_errors_handlers(app):

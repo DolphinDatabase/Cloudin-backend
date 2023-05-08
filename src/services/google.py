@@ -75,7 +75,7 @@ class GoogleService:
                         total_time = time.time() - start_time
             file_size = os.path.getsize(output_file)
             return {"title": fileName, "time": total_time, "size": file_size}
-        except:
+        except Exception:
             raise StorageErrorException("Google download error")
 
     def upload(self, fileName: str, path: str, folder: str):
@@ -109,7 +109,7 @@ class GoogleService:
             total_time = time.time() - start_time
             os.remove("./downloads/" + path + "/" + fileName)
             return {"title": fileName, "time": total_time}
-        except:
+        except Exception:
             raise StorageErrorException("Google upload error")
 
     def remove_file(self, fileID: str, fileName: str, path: str):

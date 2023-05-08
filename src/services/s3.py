@@ -3,6 +3,7 @@ import os
 import time
 
 from ..utils.mymeType import getMymetype
+from ..exception.exceptions import StorageAuthorizationException, StorageErrorException
 
 
 class s3Service:
@@ -63,8 +64,8 @@ class s3Service:
             file_size = os.path.getsize(local_file_path)
             download_time = time.time() - start_time
             return {"title": fileName, "time": download_time, "size": file_size}
-        except:
-            raise Exception("S3 download error")
+        except Exception:
+            raise StorageErrorException("S3 download error")
 
     def upload(self, fileName: str, path: str, folder: str):
         try:
@@ -87,8 +88,8 @@ class s3Service:
             upload_time = time.time() - start_time
             os.remove(local_file_path)
             return {"title": fileName, "time": upload_time}
-        except:
-            raise Exception("S3 upload error")
+        except Exception:
+            raise StorageErrorException("S3 upload error")
 
     def remove_file(self, fileID: str, fileName: str, path: str):
         tk = self.token.split(" ")
@@ -101,5 +102,5 @@ class s3Service:
         try:
             s3.delete_object(Bucket=tk[3], Key=fileID)
             return {"message": "File successfully deleted."}
-        except:
-            raise Exception("S3 delete error")
+        except Exception:
+            raise StorageErrorException("S3 delete error")
