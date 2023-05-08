@@ -79,7 +79,7 @@ def list_folders():
             folders.extend(json_response["files"])
             next_page_token = json_response.get("nextPageToken", None)
             params["pageToken"] = next_page_token
-            return make_response(jsonify({"result": folders}), 200)
+        return make_response(jsonify({"result": folders}), 200)
     except Exception as e:
         return make_response(jsonify({"error": f"list folder error:{e}"}, 500))
 

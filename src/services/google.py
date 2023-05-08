@@ -120,3 +120,18 @@ class GoogleService:
             return {"message": "File successfully deleted."}
         else:
             raise StorageErrorException("Google delete error")
+
+    def get_folder_name(self, folder_id: str) -> str:
+        url = f"https://www.googleapis.com/drive/v3/files/{folder_id}"
+        headers = {"Authorization": f"Bearer {self.token}"}
+        response = requests.get(url=url, headers=headers)
+
+        if response.status_code == 403:
+            raise StorageAuthorizationException
+
+        if response.status_code != 200:
+            raise StorageErrorException
+
+        folder_name = response.json()['name']
+
+        return folder_name

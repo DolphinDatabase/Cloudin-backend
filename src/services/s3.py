@@ -104,3 +104,6 @@ class s3Service:
             return {"message": "File successfully deleted."}
         except Exception:
             raise StorageErrorException("S3 delete error")
+
+    def get_folder_name(self, folder_id: str) -> str:
+        return folder_id
