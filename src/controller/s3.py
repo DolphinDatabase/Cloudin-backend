@@ -29,7 +29,6 @@ def list_folders():
     s3 = boto3.client(
         "s3", aws_access_key_id=tk[0], aws_secret_access_key=tk[1], region_name=tk[2]
     )
-
     # Lista todos os objetos do bucket
     response = s3.list_objects(Bucket=tk[3], Delimiter="/")
     # Extrai as informações dos objetos e os retorna
