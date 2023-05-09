@@ -4,4 +4,4 @@ WORKDIR /app
 RUN pip install -r requirements.txt
 COPY . /app
 ENTRYPOINT [ "python" ]
-CMD [ "-m","pytest","test/unit-test/test_google.py"]
+CMD [ "-m","pytest","test/unit-test/"]
