@@ -16,7 +16,16 @@ services:
   test:
     build: 
       context: .
-      dockerfile: test/Dockerfile
+      dockerfile: test/unit-test/Dockerfile
+    container_name: cloudin-test
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+  manual-test:
+    build: 
+      context: .
+      dockerfile: test/integration-test/Dockerfile
     container_name: cloudin-test
     ports:
       - "5000:5000"

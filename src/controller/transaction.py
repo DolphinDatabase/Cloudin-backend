@@ -41,7 +41,7 @@ def make_transaction(config: Config, originService, destinyService):
     for f in originService.list_files_by_folder(config.originFolder):
         try:
             download = originService.download(f["id"], f["name"])
-        except Exception:
+        except:
             for filename in os.listdir("./downloads/" + config.origin):
                 file_path = os.path.join("./downloads/" + config.origin, filename)
                 os.remove(file_path)
@@ -53,7 +53,7 @@ def make_transaction(config: Config, originService, destinyService):
             download["time"] += upload["time"]
             transaction_data.append(download)
             originService.remove_file(f["id"], f["name"], config.originFolder)
-        except Exception:
+        except:
             for filename in os.listdir("./downloads/" + config.origin):
                 file_path = os.path.join("./downloads/" + config.origin, filename)
                 os.remove(file_path)
