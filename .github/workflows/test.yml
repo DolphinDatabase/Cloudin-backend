@@ -16,4 +16,4 @@ jobs:
         docker-compose build test
     - name: Run tests
       run: |
-        docker-compose run --rm test 
+        docker-compose run --rm -e GOOGLE_TOKEN=${{ github.event.inputs.logLevel }} -e GOOGLE_FOLDER=${{ github.event.inputs.logLevel }} -e S3_TOKEN=${{ github.event.inputs.logLevel }} -e S3_FOLDER=${{ github.event.inputs.logLevel }} test 
