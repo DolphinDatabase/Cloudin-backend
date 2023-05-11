@@ -3,9 +3,10 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+
 @pytest.fixture(scope="session")
 def init_database():
-    engine = create_engine('sqlite:///:memory:')
+    engine = create_engine("sqlite:///:memory:")
     db.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
     session = Session()

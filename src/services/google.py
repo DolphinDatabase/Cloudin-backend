@@ -62,7 +62,7 @@ class GoogleService:
             response = requests.get(
                 file_url, headers={"Authorization": f"Bearer {self.token}"}, stream=True
             )
-            
+
             if not os.path.exists("./downloads/google"):
                 os.makedirs("./downloads/google")
 
@@ -132,6 +132,6 @@ class GoogleService:
         if response.status_code != 200:
             raise StorageErrorException
 
-        folder_name = response.json()['name']
+        folder_name = response.json()["name"]
 
         return folder_name

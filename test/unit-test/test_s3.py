@@ -1,27 +1,27 @@
 import os
 import sys
 
-from unittest.mock import MagicMock,patch
+from unittest.mock import MagicMock, patch
 from src.services.s3 import s3Service
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+
 def test_filesByFolder():
-    boto3_client = MagicMock(name= 'boto3.client')
-    boto3_client.list_objects.return_value = {
-        'Contents':["folder","file1","file2"]
-    }
-    with patch('boto3.client', return_value=boto3_client):
+    boto3_client = MagicMock(name="boto3.client")
+    boto3_client.list_objects.return_value = {"Contents": ["folder", "file1", "file2"]}
+    with patch("boto3.client", return_value=boto3_client):
         service = s3Service("token token token token")
         result = service.files_by_folder(None)
     assert result == 2
+
 
 # def test_listFilesByFolder():
 
 
 # @mock.patch('boto3.client')
 # def test_list_folders_valid_token(mock_get):
-#     mock_get.list_objects.return_value = { 
+#     mock_get.list_objects.return_value = {
 #         "CommonPrefixes": [
 #             {"Prefix":"teste1/"},
 #             {"Prefix":"teste2/"},
