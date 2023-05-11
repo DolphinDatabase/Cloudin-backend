@@ -5,20 +5,20 @@ on:
        - main
       types: [closed]
 jobs:
-
-  build-test:
+  build:
     name: Build
     if: ${{ github.event.pull_request.merged }}
     runs-on: ubuntu-latest
     steps:
-    - name: Repository pull 
+    - name: Deploy
       uses: appleboy/ssh-action@v0.1.8
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-                  cd /home/ec2-user/Cloudin-backend
-                  git pull
-                  docker-compose build mysql
-                  docker-compose build web
+                    cd /home/ec2-user/Cloudin-backend
+                    git pull
+                    ./../cleanContainer.sh
+                    docker build --tag cloudin-backend .
+                    docker run -d -p 5000:5000 cloudin-backend 
