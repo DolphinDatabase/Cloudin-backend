@@ -16,7 +16,24 @@ def test_filesByFolder():
         result = service.files_by_folder(None)
     assert result == 2
 
-# def test_listFilesByFolder():
+def test_listFilesByFolder():
+    boto3_client = MagicMock(name= 'boto3.client')
+    boto3_client.list_objects.return_value = {
+        'Contents': [
+            {'Key': 'folder/file1.txt'},
+            {'Key': 'folder/file2.txt'},
+            {'Key': 'folder/subfolder/file3.txt'}
+        ]
+    }
+    with patch('boto3.client', return_value=boto3_client):
+        service = s3Service("token token token token")
+        result = service.list_files_by_folder(folder='folder')
+    assert result == [
+        {'id': 'folder/file1.txt', 'name': 'file1.txt'},
+        {'id': 'folder/file2.txt', 'name': 'file2.txt'},
+        {'id': 'folder/subfolder/file3.txt', 'name': 'subfolder'}
+    ]
+
 
 
 # @mock.patch('boto3.client')
