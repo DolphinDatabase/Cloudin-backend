@@ -9,11 +9,11 @@ from time import sleep
 
 DATA_PATH = "test/config/data.json"
 
-FOLDER_GOOGLE = "<OVERRIDE THIS FOR YOU FOLDER ID>"
-FOLDER_S3 = "<OVERRIDE THIS FOR YOU FOLDER ID>"
+FOLDER_GOOGLE = "1vsYhJi34hozGjnsWvHeeAq2QyA8vbATl"
+FOLDER_S3 = "pastaTeste"
 
-TOKEN_GOOGLE = "<OVERRIDE THIS FOR YOU GOOGLE REFRESH TOKEN"
-TOKEN_S3 = "<OVERRIDE THIS FOR YOU S3 CREDENTIALS"
+TOKEN_GOOGLE = "1//0hcI5v1DSgbG2CgYIARAAGBESNwF-L9Ir_Roh0M-n--cGqAZG0RGE0sEVvaXBjwGd_-yEt3jaeGveN7KFGWy3uLMIIyYWx3830Mo"
+TOKEN_S3 = "AKIA4VVR7RPQYTILT3MO LXYAbeTX6zwfoCdGh4LiAZVEjPwEMvC6ICEBSnDi us-east-1 cloudin-bucket"
 
 
 def return_data():
@@ -104,7 +104,7 @@ def test_transaction_from_google_to_s3(test_client):
     response = test_client.post("/config", json=json_config)
     assert response.status_code == 200
 
-    sleep(60)
+    sleep(120)
 
     current_files = google_service.list_files_by_folder(FOLDER_GOOGLE)
     assert current_files == []
@@ -117,6 +117,6 @@ def test_transaction_from_google_to_s3(test_client):
     s3_files_names = []
 
     for file in s3_files:
-        s3_files.append(s3_files_names["name"])
+        s3_files_names.append(file["name"])
 
     assert_list_contains(google_files_names, s3_files_names)
