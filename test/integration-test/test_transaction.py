@@ -9,11 +9,11 @@ from time import sleep
 
 DATA_PATH = "test/config/data.json"
 
-FOLDER_GOOGLE = "1vsYhJi34hozGjnsWvHeeAq2QyA8vbATl"
-FOLDER_S3 = "pastaTeste"
+FOLDER_GOOGLE = os.environ.get("GOOGLE_FOLDER")
+FOLDER_S3 = os.environ.get("S3_FOLDER")
 
-TOKEN_GOOGLE = "1//0hcI5v1DSgbG2CgYIARAAGBESNwF-L9Ir_Roh0M-n--cGqAZG0RGE0sEVvaXBjwGd_-yEt3jaeGveN7KFGWy3uLMIIyYWx3830Mo"
-TOKEN_S3 = "AKIA4VVR7RPQYTILT3MO LXYAbeTX6zwfoCdGh4LiAZVEjPwEMvC6ICEBSnDi us-east-1 cloudin-bucket"
+TOKEN_GOOGLE = os.environ.get("GOOGLE_TOKEN")
+TOKEN_S3 = os.environ.get("S3_TOKEN")
 
 
 def return_data():
