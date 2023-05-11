@@ -1,18 +1,16 @@
 from src.app import app, db
 import pytest
-
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 @pytest.fixture(scope="session")
 def init_database():
-    with app.app_context():
-        db.drop_all()
-        db.create_all()
-
-    yield db
-
-    with app.app_context():
-        db.session.remove()
-        db.drop_all()
+    engine = create_engine('sqlite:///:memory:')
+    db.metadata.create_all(engine)
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    yield session
+    session.rollback()
 
 
 @pytest.fixture(scope="session")
