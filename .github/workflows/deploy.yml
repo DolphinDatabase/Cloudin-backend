@@ -21,4 +21,4 @@ jobs:
                     git pull
                     ./../cleanContainer.sh
                     docker-compose build web
-                    docker-compose run web
+                    docker-compose run -d web
