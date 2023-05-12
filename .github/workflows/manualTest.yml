@@ -1,0 +1,28 @@
+name: Manual Test
+on: 
+  workflow_dispatch:
+    inputs:
+      googleToken:
+        description: 'Google Token'     
+        required: true
+      googleFolder:
+        description: 'Google Folder'     
+        required: true
+      s3Token:
+        description: 'S3 Token'     
+        required: true
+      s3Folder:
+        description: 'S3 Folder'     
+        required: true
+jobs:
+  ManualTest:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Build Docker image
+      run: |
+        docker-compose build manual-test
+    - name: Run tests
+      run: |
+        docker-compose run --rm -e GOOGLE_TOKEN=${{ github.event.inputs.googleToken }} -e GOOGLE_FOLDER=${{ github.event.inputs.googleFolder }} -e S3_TOKEN=${{ github.event.inputs.s3Token }} -e S3_FOLDER=${{ github.event.inputs.s3Folder }} manual-test 

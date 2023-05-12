@@ -10,9 +10,10 @@ from src.model.file import File
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+
 @pytest.fixture
 def db_session():
-    engine = create_engine('sqlite:///:memory:')
+    engine = create_engine("sqlite:///:memory:")
     db.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -22,9 +23,9 @@ def db_session():
 def test_file_model(db_session):
     # Create a new file
     file = File()
-    file.name = 'teste'
+    file.name = "teste"
     file.size = 3.14
-    file.time = time(hour=12,minute=12,second=12)
+    file.time = time(hour=12, minute=12, second=12)
 
     # Add the file to the session and commit
     db_session.add(file)

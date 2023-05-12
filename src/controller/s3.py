@@ -34,8 +34,10 @@ def list_folders():
     # Extrai as informações dos objetos e os retorna
     obj_list = []
     for i in response.get("CommonPrefixes"):
-        obj_list.append({'id':i["Prefix"].replace("/", ""),'name':i["Prefix"].replace("/", "")})
-    return make_response(jsonify({'result':obj_list}), 200)
+        obj_list.append(
+            {"id": i["Prefix"].replace("/", ""), "name": i["Prefix"].replace("/", "")}
+        )
+    return make_response(jsonify({"result": obj_list}), 200)
 
 
 @s3_blueprint.route("/list", strict_slashes=False)
