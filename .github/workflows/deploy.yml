@@ -20,5 +20,4 @@ jobs:
                     cd /home/ec2-user/Cloudin-backend
                     git pull
                     ./../cleanContainer.sh
-                    docker-compose build web
-                    docker-compose run -d web
+                    docker-compose up --build -d web
