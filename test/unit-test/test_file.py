@@ -20,20 +20,19 @@ def db_session():
     yield session
     session.rollback()
 
-
-def test_person_model(db_session):
-    # Create a new person
+def test_file_model(db_session):
+    # Create a new file
     file = File()
     file.name = "teste"
     file.size = 3.14
     file.time = time(hour=12, minute=12, second=12)
 
-    # Add the person to the session and commit
+    # Add the file to the session and commit
     db_session.add(file)
     db_session.commit()
 
-    # Query the person from the database
-    result = db_session.query(File).filter_by(name="teste").first()
+    # Query the file from the database
+    result = db_session.query(File).filter_by(name='teste').first()
 
     # Check the result
     assert result is not None
