@@ -46,7 +46,6 @@ def test_list_files_by_folder():
         {'id': 'folder/subfolder/file3.txt', 'name': 'subfolder'}
     ]
 
-@pytest.fixture(scope="session")
 def test_list_folders_valid_token():
     boto3_client = MagicMock(name= 'boto3.client')
     boto3_client.list_objects.return_value = { 
