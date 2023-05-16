@@ -8,9 +8,10 @@ from .exception.exceptions import configure_errors_handlers
 
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://backend:api5sem@ec2-54-196-223-210.compute-1.amazonaws.com:3306/cloudin"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
+    "SQLALCHEMY_DATABASE_URI", "sqlite:///:memory:"
+)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
 CORS(app)
 warnings.filterwarnings(
     "ignore", category=DeprecationWarning, module="flask_marshmallow"
