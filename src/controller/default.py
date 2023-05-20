@@ -89,6 +89,6 @@ def configure_routes(app):
 
     @app.route("/")
     def helloWorld():
-        return "Hello World!!!"
+        return "Hello World!!"
 
     return myFunction
