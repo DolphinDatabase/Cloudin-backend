@@ -1,13 +1,14 @@
 from flask import Blueprint, jsonify, make_response, request
-
+from dotenv import set_key
+from .default import configure_routes
 from ..utils import *
 from ..model import *
 from ..schema import *
 from ..services import *
 
-
 config_blueprint = Blueprint("config", __name__, url_prefix="/config")
 
+job = configure_routes
 
 @config_blueprint.route("/", methods=["GET"], strict_slashes=False)
 def list_config():
@@ -44,3 +45,4 @@ def create_config():
     schema = ConfigSchema()
     response = jsonify(schema.dump(data))
     return make_response(response, 200)
+    
