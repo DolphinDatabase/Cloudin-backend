@@ -20,6 +20,7 @@ def db_session():
     yield session
     session.rollback()
 
+
 def test_file_model(db_session):
     # Create a new file
     file = File()
@@ -32,7 +33,7 @@ def test_file_model(db_session):
     db_session.commit()
 
     # Query the file from the database
-    result = db_session.query(File).filter_by(name='teste').first()
+    result = db_session.query(File).filter_by(name="teste").first()
 
     # Check the result
     assert result is not None
