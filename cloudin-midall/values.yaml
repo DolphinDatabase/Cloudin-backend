@@ -1,0 +1,5 @@
+replicas: 3
+image:
+  repository: nginx
+  tag: 1.19.10
+  pullPolicy: IfNotPresent

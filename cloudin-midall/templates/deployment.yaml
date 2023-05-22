@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-backend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-backend
+  template:
+    metadata:
+      labels:
+        app: frontend-backend
+    spec:
+      containers:
+        - name: frontend
+          image: dolphindatabase/midall-frontend-api5:1.0.4
+          ports:
+            - containerPort: 80
+        - name: backend
+          image: dolphindatabase/midall-backend-api5:1.0.3
+          ports:
+            - containerPort: 5000
