@@ -10,6 +10,7 @@ config_blueprint = Blueprint("config", __name__, url_prefix="/config")
 
 job = configure_routes
 
+
 @config_blueprint.route("/", methods=["GET"], strict_slashes=False)
 def list_config():
     services = {"google": GoogleService, "s3": s3Service}
@@ -45,4 +46,3 @@ def create_config():
     schema = ConfigSchema()
     response = jsonify(schema.dump(data))
     return make_response(response, 200)
-    
