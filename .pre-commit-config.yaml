@@ -3,3 +3,10 @@ repos:
     rev: 23.3.0
     hooks:
     - id: black
+hooks:
+  - id: jira-card-id-check
+    name: Jira Card ID Check
+    entry: jira_card_id_check.sh
+    language: script
+    pass_filenames: false
+    stages: [commit]
