@@ -1,4 +1,9 @@
 repos:
+  - repo: https://github.com/ambv/black
+    rev: 23.3.0
+    hooks:
+    - id: black
+    
   - repo: local
     hooks:
     - id: jira-ticket
