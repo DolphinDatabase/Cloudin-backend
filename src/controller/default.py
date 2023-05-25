@@ -32,7 +32,7 @@ def configure_routes(app):
 
         return Response(stream(), mimetype="text/event-stream")
 
-    @scheduler.scheduled_job("interval", seconds=60)
+    @scheduler.scheduled_job("interval", seconds=int(load_json_file()["JOB_TIME"]))
     def myFunction():
         with app.app_context():
             print("ok")
