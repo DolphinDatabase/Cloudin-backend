@@ -33,9 +33,15 @@ def configure_routes(app):
         return Response(stream(), mimetype="text/event-stream")
 
     @scheduler.scheduled_job("interval", seconds=int(load_json_file()["JOB_TIME"]))
+    @limit_bandwidth(int(getBandwidth() * 1))
     def myFunction():
         with app.app_context():
-            print("ok")
+            print(
+                "banda: "
+                + str(getBandwidth())
+                + ", limited: "
+                + str(getBandwidth() * 0.5)
+            )
             schema = TransactionSchema()
             query = Config().query.all()
             for i in query:
