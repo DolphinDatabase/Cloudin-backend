@@ -43,6 +43,7 @@ Nesse fluxo de trabalho, as branches podem ser divididas em três tipos:
 - Main
 - Develop
 - Feature
+
 As Fetures são branches de suporte que são descartadas após cumprirem seu propósito. 
 Para cada uma das branches , existem algumas regras específicas que precisam ser seguidas para manter a otimização do versionamento:
 Main é a ramificação principal que contém o código-fonte em produção. 
