@@ -1,23 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend-backend-deployment
+  name: cloudin-midall
+  labels:
+    app: cloudin-midall
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: frontend-backend
+      app: cloudin-midall
   template:
     metadata:
       labels:
-        app: frontend-backend
+        app: cloudin-midall
     spec:
       containers:
-        - name: frontend
-          image: dolphindatabase/midall-frontend-api5:1.0.4
-          ports:
-            - containerPort: 80
         - name: backend
-          image: dolphindatabase/midall-backend-api5:1.0.3
+          image: {{ include "cloudin-midall.getImage" . }}
           ports:
-            - containerPort: 5000
+            - containerPort: {{ .Values.backend.ports.containerPort }}
+{{ include "cloudin-midall.probeAndResources" .Values.backend.ports.containerPort | nindent 10 }}
