@@ -1,5 +1,7 @@
-replicas: 3
-image:
-  repository: nginx
-  tag: 1.19.10
-  pullPolicy: IfNotPresent
+replicas: 1
+backend:
+  image:
+    repository: dolphindatabase/midall-backend-api5
+    tag: 1.0.3
+  ports:
+    containerPort: 5000

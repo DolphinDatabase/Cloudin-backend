@@ -12,6 +12,7 @@ from .google import filesByFolderGoogle
 from .s3 import filesByFolderS3
 from .transaction import new_transaction, update_transaction, make_transaction
 
+
 def configure_routes(app):
     announcer = MessageAnnouncer()
 
@@ -73,19 +74,17 @@ def configure_routes(app):
     def set_job_time():
         body = request.get_json()
         data = load_json_file()
-        data['JOB_TIME']=str(body['job'])
+        data["JOB_TIME"] = str(body["job"])
         save_json_file(data)
         scheduler.remove_all_jobs()
-        scheduler.add_job(myFunction,IntervalTrigger(seconds=int(body['job'])))
+        scheduler.add_job(myFunction, IntervalTrigger(seconds=int(body["job"])))
         return make_response({}, 200)
-    
+
     @app.route("/job", methods=["GET"], strict_slashes=False)
     def get_job_time():
         data = load_json_file()
-        res = {
-            "job":data['JOB_TIME']
-        }
-        return make_response(res,200)
+        res = {"job": data["JOB_TIME"]}
+        return make_response(res, 200)
 
     @app.route("/")
     def helloWorld():
