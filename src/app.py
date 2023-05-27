@@ -9,12 +9,9 @@ from dotenv import set_key
 
 
 app = Flask(__name__)
-app.config[
-    "SQLALCHEMY_DATABASE_URI"
-] = "mysql://backend:api5sem@ec2-54-196-223-210.compute-1.amazonaws.com:3306/cloudin"
-# os.getenv(
-#    "SQLALCHEMY_DATABASE_URI", "sqlite:///:memory:"
-# )
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
+    "SQLALCHEMY_DATABASE_URI", "sqlite:///:memory:"
+)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 CORS(app)
 warnings.filterwarnings(
