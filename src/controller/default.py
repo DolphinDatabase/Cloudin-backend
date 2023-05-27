@@ -33,9 +33,9 @@ def configure_routes(app):
         return Response(stream(), mimetype="text/event-stream")
 
     @scheduler.scheduled_job("interval", seconds=int(load_json_file()["JOB_TIME"]))
+    @limit_bandwidth(int(getBandwidth() * (int(load_json_file()["BAND"]) / 100)))
     def myFunction():
         with app.app_context():
-            print("ok")
             schema = TransactionSchema()
             query = Config().query.all()
             for i in query:
@@ -55,14 +55,16 @@ def configure_routes(app):
                         event="newTransaction",
                     )
                     announcer.announce(msg=msg)
-
-                    files = make_transaction(i, originService, destinyService)
-                    if not files:
-                        transaction = update_transaction(transaction, "Erro", files)
-                    else:
-                        transaction = update_transaction(
-                            transaction, "Concluido", files
-                        )
+                    try:
+                        files = make_transaction(i, originService, destinyService)
+                        if len(files) <= 0:
+                            transaction = update_transaction(transaction, "Erro", [])
+                        else:
+                            transaction = update_transaction(
+                                transaction, "Concluido", files
+                            )
+                    except Exception as e:
+                        transaction = update_transaction(transaction, "Erro", [])
 
                     msg = format_sse(
                         data={"config": i.id, "transaction": schema.dump(transaction)},
@@ -75,6 +77,7 @@ def configure_routes(app):
         body = request.get_json()
         data = load_json_file()
         data["JOB_TIME"] = str(body["job"])
+        data["BAND"] = str(body["band"])
         save_json_file(data)
         scheduler.remove_all_jobs()
         scheduler.add_job(myFunction, IntervalTrigger(seconds=int(body["job"])))
@@ -83,8 +86,7 @@ def configure_routes(app):
     @app.route("/job", methods=["GET"], strict_slashes=False)
     def get_job_time():
         data = load_json_file()
-        res = {"job": data["JOB_TIME"]}
-        return make_response(res, 200)
+        return make_response(data, 200)
 
     @app.route("/")
     def helloWorld():
