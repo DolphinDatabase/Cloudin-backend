@@ -15,3 +15,10 @@ spec:
             name: cloudin-midall
             port:
               number: {{ .Values.backend.ports.containerPort }}
+      - path: /mysql
+        pathType: Prefix
+        backend:
+          service:
+            name: cloudin-midall
+            port:
+              number: 3306

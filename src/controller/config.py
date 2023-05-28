@@ -46,3 +46,10 @@ def create_config():
     schema = ConfigSchema()
     response = jsonify(schema.dump(data))
     return make_response(response, 200)
+
+
+@config_blueprint.route("/test", methods=["GET"], strict_slashes=False)
+def test_config():
+    response = "Ingress and Service working out of k8s cluster"
+    response = jsonify(response)
+    return make_response(response, 200)
