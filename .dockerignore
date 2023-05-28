@@ -4,3 +4,4 @@
 /mysql_data
 .pytest_cache/
 __pycache__/
+cloudin-midall/

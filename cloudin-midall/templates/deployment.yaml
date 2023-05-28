@@ -19,4 +19,7 @@ spec:
           image: {{ include "cloudin-midall.getImage" . }}
           ports:
             - containerPort: {{ .Values.backend.ports.containerPort }}
+          env:
+          - name: DATABASE_URL
+            value: "mysql://dbuser:dbuser@cloudin-midall-mysql:3306/cloudin"
 {{ include "cloudin-midall.probeAndResources" .Values.backend.ports.containerPort | nindent 10 }}

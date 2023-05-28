@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: cloudin-midall-mysql
+  labels:
+    app: cloudin-midall-mysql
+spec:
+  serviceName: cloudin-midall-mysql
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudin-midall-mysql
+  template:
+    metadata:
+      labels:
+        app: cloudin-midall-mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:latest
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "example"
+            - name: MYSQL_DATABASE
+              value: "cloudin"
+            - name: MYSQL_USER
+              value: "dbuser"
+            - name: MYSQL_PASSWORD
+              value: "dbuser"
+          resources:
+            limits:
+              cpu: 100m
+              memory: 256Mi
+            requests:
+              cpu: 80m
+              memory: 128Mi
