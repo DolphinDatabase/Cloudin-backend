@@ -1,4 +1,4 @@
-{{- define "cloudin-midall.probeAndResources" -}}
+{{- define "cloudin-midall.probeAndResources" }}
 livenessProbe:
   httpGet:
     path: /
@@ -14,20 +14,10 @@ resources:
   requests:
     cpu: 80m
     memory: 128Mi
-{{- end -}}
+{{- end }}
 
-{{- define "cloudin-midall.getImage" -}}
-{{- $imageName := .Values.backend.image.repository -}}
-{{- $tag := .Values.backend.image.tag -}}
-{{- printf "%s:%s" $imageName $tag -}}
-{{- end -}}
-
-{{- define "cloudin-midall.image" -}}
-- name: backend
-  image: {{ include "cloudin-midall.getImage" . }}
-  ports:
-    - containerPort: {{ .Values.backend.ports.containerPort }}
-  env:
-  - name: DATABASE_URL
-    value: "mysql://dbuser:dbuser@cloudin-midall-mysql:3306/cloudin"
-{{- end -}}
+{{- define "cloudin-midall.getImage" }}
+{{- $imageName := .Values.backend.image.repository }}
+{{- $tag := .Values.backend.image.tag }}
+{{- printf "%s:%s" $imageName $tag }}
+{{- end }}
