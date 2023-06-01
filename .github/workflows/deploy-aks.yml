@@ -52,9 +52,9 @@ jobs:
         docker push $DOCKER_IMAGE:$IMAGE_TAG
 
     - name: Package Helm chart
-      run: helm package ./cloudin-midall
+      run: helm package cloudin-midall/ .
 
     - name: Deploy Helm chart to AKS
       run: |
         az aks get-credentials --resource-group azure-cluster --name azure-cluster
-        helm upgrade --install cloudin ./cloudin-midall/cloudin-midall-1.0.0.tgz --namespace cloudin-cd --set backend.image.tag=$IMAGE
+        helm upgrade --install cloudin cloudin-midall/cloudin-midall-1.0.0.tgz --namespace cloudin-cd --set backend.image.tag=$IMAGE
