@@ -15,11 +15,5 @@ spec:
         app: cloudin-midall
     spec:
       containers:
-        - name: backend
-          image: {{ .Values.backend.image.repository }}:{{.Values.backend.image.tag}}
-          ports:
-            - containerPort: {{ .Values.backend.ports.containerPort }}
-          env:
-          - name: DATABASE_URL
-            value: mysql://dbuser:dbuser@cloudin-midall-mysql:3306/cloudin
+{{ include "cloudin-midall.image" . | nindent 8 }}
 {{ include "cloudin-midall.probeAndResources" .Values.backend.ports.containerPort | nindent 10 }}

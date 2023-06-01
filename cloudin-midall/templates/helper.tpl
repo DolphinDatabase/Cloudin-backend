@@ -21,3 +21,13 @@ resources:
 {{- $tag := .Values.backend.image.tag -}}
 {{- printf "%s:%s" $imageName $tag -}}
 {{- end -}}
+
+{{- define "cloudin-midall.image" -}}
+- name: backend
+  image: {{ include "cloudin-midall.getImage" . }}
+  ports:
+    - containerPort: {{ .Values.backend.ports.containerPort }}
+  env:
+  - name: DATABASE_URL
+    value: "mysql://dbuser:dbuser@cloudin-midall-mysql:3306/cloudin"
+{{- end -}}
