@@ -56,5 +56,5 @@ jobs:
 
     - name: Deploy Helm chart to AKS
       run: |
-        az aks get-credentials --resource-group RESOURCE_GROUP_NAME --name CLUSTER_NAME
+        az aks get-credentials --resource-group azure-cluster --name azure-cluster
         helm upgrade --install cloudin ./cloudin-midall/cloudin-midall-1.0.0.tgz --namespace cloudin-cd --set backend.image.tag=$IMAGE
