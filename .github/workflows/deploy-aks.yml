@@ -1,0 +1,62 @@
+name: Deploy to Azure AKS
+
+on:
+  push:
+    branches:
+      - dev 
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Helm
+      uses: azure/setup-helm@v1
+
+    - name: Configure Azure credentials
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Determine the last Docker image tag
+      id: get_last_tag
+      run: |
+        LAST_TAG=$(git describe --abbrev=0 --tags)
+        echo "::set-output name=tag::$LAST_TAG"
+
+    - name: Increment the Docker image tag
+      id: increment_tag
+      run: |
+        LAST_TAG=${{ steps.get_last_tag.outputs.tag }}
+        IFS='.' read -ra VERSION <<< "$LAST_TAG"
+        MAJOR=${VERSION[0]}
+        MINOR=${VERSION[1]}
+        PATCH=${VERSION[2]}
+        PATCH=$((PATCH + 1))
+        NEW_TAG="$MAJOR.$MINOR.$PATCH"
+        echo "::set-output name=tag::$NEW_TAG"
+
+    - name: Build and push Docker image
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        DOCKER_IMAGE: dolphindatabase/midall-backend-api5
+      run: |
+        IMAGE_TAG=${{ steps.increment_tag.outputs.tag }}
+        docker build -t $DOCKER_IMAGE:$IMAGE_TAG .
+        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+        docker push $DOCKER_IMAGE:$IMAGE_TAG
+
+    - name: Install dependencies
+      run: helm dependency build ./path/to/helm/chart
+
+    - name: Package Helm chart
+      run: helm package ./cloudin-midall
+
+    - name: Deploy Helm chart to AKS
+      run: |
+        az aks get-credentials --resource-group RESOURCE_GROUP_NAME --name CLUSTER_NAME
+        helm upgrade --install cloudin ./cloudin-midall/cloudin-midall-1.0.0.tgz --namespace cloudin-cd --set backend.image.tag=$IMAGE
