@@ -19,6 +19,5 @@ resources:
 {{- define "cloudin-midall.getImage" }}
 {{- $imageName := .Values.backend.image.repository }}
 {{- $tag := .Values.backend.image.tag }}
-{{- $image := printf "%s:%s" $imageName $tag | toYaml }}
-{{- $image | safeYaml }}
+{{- printf "%q:%q" $imageName $tag }}
 {{- end }}
