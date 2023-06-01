@@ -78,6 +78,7 @@ def configure_routes(app):
         data = load_json_file()
         data["JOB_TIME"] = str(body["job"])
         data["BAND"] = str(body["band"])
+        data["TRANSFER_TIME"] = str(body["transfer"])
         save_json_file(data)
         scheduler.remove_all_jobs()
         scheduler.add_job(myFunction, IntervalTrigger(seconds=int(body["job"])))
