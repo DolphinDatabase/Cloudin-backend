@@ -51,9 +51,6 @@ jobs:
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
         docker push $DOCKER_IMAGE:$IMAGE_TAG
 
-    - name: Install dependencies
-      run: helm dependency build ./path/to/helm/chart
-
     - name: Package Helm chart
       run: helm package ./cloudin-midall
 
