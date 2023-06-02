@@ -14,7 +14,7 @@ spec:
           service:
             name: cloudin-midall
             port:
-              number: {{ .Values.backend.ports.containerPort }}
+              number: 5000
       - path: /mysql
         pathType: Prefix
         backend:
