@@ -51,15 +51,12 @@ jobs:
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
         docker push $DOCKER_IMAGE:$IMAGE_TAG
 
-    - name: Package Helm chart
-      run: helm package ./cloudin-midall -d ./cloudin-midall
-
     - name: Deploy Helm chart to AKS
       run: |
         az account set --subscription 16cbcfe3-5051-4f12-bebe-6919e9f04763
         az aks get-credentials --resource-group azure-cluster --name azure-cluster
-        ls
-        cd ./teste/Cloudin-backend/
+        ls $GITHUB_WORKSPACE/teste/Cloudin-backend/
+        cd $GITHUB_WORKSPACE/teste/Cloudin-backend/
         git pull
         cd ./cloudin-midall/
         helm package .
