@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: dolphindatabase/midall-backend-api5:1.1.4
+          image: {{ include "cloudin-midall.getImage" . }}
           ports:
             - containerPort: {{ .Values.backend.ports.containerPort }}
           env:
