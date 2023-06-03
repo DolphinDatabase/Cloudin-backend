@@ -55,9 +55,7 @@ jobs:
       run: |
         az account set --subscription 16cbcfe3-5051-4f12-bebe-6919e9f04763
         az aks get-credentials --resource-group azure-cluster --name azure-cluster
-        az aks command invoke --resource-group azure-cluster --name azure-cluster --command "ls /home"
-        az aks command invoke --resource-group azure-cluster --name azure-cluster --command "cd /home/victor/teste/Cloudin-backend/"
-        az aks command invoke --resource-group azure-cluster --name azure-cluster --command "git pull"
-        az aks command invoke --resource-group azure-cluster --name azure-cluster --command "cd ./cloudin-midall/"
-        az aks command invoke --resource-group azure-cluster --name azure-cluster --command "helm package ."
-        az aks command invoke --resource-group azure-cluster --name azure-cluster --command "helm upgrade cloudin ./cloudin-midall-1.0.0.tgz --namespace cloudin-cd --set backend.image.tag=$IMAGE"
+        cd cloudin-midall/
+        helm package .
+        helm upgrade cloudin ./cloudin-midall-1.0.0.tgz --namespace cloudin-cd --set backend.image.tag=$IMAGE
+
