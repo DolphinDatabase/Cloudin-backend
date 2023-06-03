@@ -51,6 +51,12 @@ jobs:
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
         docker push $DOCKER_IMAGE:$IMAGE_TAG
 
+    - name: Get Kubernetes version
+      id: get_kubernetes_version
+      run: |
+        KUBERNETES_VERSION=$(az aks show --resource-group --resource-group azure-cluster --name azure-cluster --query 'kubernetesVersion' -o tsv)
+        echo "::set-output name=kubernetes-version::$KUBERNETES_VERSION"
+
     - name: Helm template
       run: |
         helm template ./cloudin-midall
@@ -60,5 +66,6 @@ jobs:
 
     - name: Deploy Helm chart to AKS
       run: |
+        az account set --subscription 16cbcfe3-5051-4f12-bebe-6919e9f04763
         az aks get-credentials --resource-group azure-cluster --name azure-cluster
-        helm upgrade --install cloudin cloudin-midall/cloudin-midall-1.0.0.tgz --namespace cloudin-cd --set backend.image.tag=$IMAGE
+        helm upgrade --install cloudin cloudin-midall/cloudin-midall-1.0.0.tgz --namespace cloudin-cd --set backend.image.tag=$IMAGE --set kubernetesVersion=${{ steps.get_kubernetes_version.outputs.kubernetes-version }}
