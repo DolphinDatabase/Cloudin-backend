@@ -54,7 +54,7 @@ jobs:
     - name: Get Kubernetes version
       id: get_kubernetes_version
       run: |
-        KUBERNETES_VERSION=$(az aks show --resource-group --resource-group azure-cluster --name azure-cluster --query 'kubernetesVersion' -o tsv)
+        KUBERNETES_VERSION=$(az aks show --resource-group azure-cluster --name azure-cluster --query 'kubernetesVersion' -o tsv)
         echo "::set-output name=kubernetes-version::$KUBERNETES_VERSION"
 
     - name: Helm template
