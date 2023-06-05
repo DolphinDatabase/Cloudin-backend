@@ -50,6 +50,6 @@ def create_config():
 
 @config_blueprint.route("/test", methods=["GET"], strict_slashes=False)
 def test_config():
-    response = "Ingress and Service working out of k8s cluster"
+    response = "Test Rolling Update: Ingress and Service working out of k8s cluster"
     response = jsonify(response)
     return make_response(response, 200)
