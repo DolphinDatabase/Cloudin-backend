@@ -57,4 +57,4 @@ jobs:
         az aks get-credentials --resource-group azure-cluster --name azure-cluster
         cd cloudin-midall/
         helm package .
-        helm upgrade cloudin ./cloudin-midall-1.0.0.tgz --namespace cloudin-cd --set backend.image.tag=$IMAGE_TAG
+        helm upgrade cloudin ./cloudin-midall-1.0.0.tgz --namespace cloudin-cd --set backend.image.tag=${{ steps.increment_tag.outputs.tag }}
