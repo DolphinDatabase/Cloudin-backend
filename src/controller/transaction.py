@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, make_response
 import importlib.util
 import os
+import time
 
 from ..model import *
 from ..schema import *
@@ -38,14 +39,17 @@ def update_transaction(transaction: Transaction, status, files):
 
 def make_transaction(config: Config, originService, destinyService):
     transaction_data = []
+    limit = int(load_json_file()["TRANSFER_TIME"])
+    countTime = 0
     for f in originService.list_files_by_folder(config.originFolder):
         try:
             download = originService.download(f["id"], f["name"])
         except:
+            print("erro download")
             for filename in os.listdir("./downloads/" + config.origin):
                 file_path = os.path.join("./downloads/" + config.origin, filename)
                 os.remove(file_path)
-            return
+            return []
         try:
             upload = destinyService.upload(
                 f["name"], config.origin, config.destinyFolder
@@ -53,11 +57,15 @@ def make_transaction(config: Config, originService, destinyService):
             download["time"] += upload["time"]
             transaction_data.append(download)
             originService.remove_file(f["id"], f["name"], config.originFolder)
+            countTime += int(time.strftime("%S", time.localtime(download["time"])))
+            if countTime > limit:
+                break
         except:
+            print("erro upload")
             for filename in os.listdir("./downloads/" + config.origin):
                 file_path = os.path.join("./downloads/" + config.origin, filename)
                 os.remove(file_path)
-            return
+            return []
     return transaction_data
 
 

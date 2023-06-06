@@ -1,12 +1,14 @@
 from flask import Blueprint, jsonify, make_response, request
-
+from dotenv import set_key
+from .default import configure_routes
 from ..utils import *
 from ..model import *
 from ..schema import *
 from ..services import *
 
-
 config_blueprint = Blueprint("config", __name__, url_prefix="/config")
+
+job = configure_routes
 
 
 @config_blueprint.route("/", methods=["GET"], strict_slashes=False)
@@ -43,4 +45,11 @@ def create_config():
     db.session.commit()
     schema = ConfigSchema()
     response = jsonify(schema.dump(data))
+    return make_response(response, 200)
+
+
+@config_blueprint.route("/test", methods=["GET"], strict_slashes=False)
+def test_config():
+    response = "Test Rolling Update: Ingress and Service working out of k8s cluster"
+    response = jsonify(response)
     return make_response(response, 200)

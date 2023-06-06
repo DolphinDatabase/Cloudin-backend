@@ -77,18 +77,14 @@ class s3Service:
                 region_name=tk[2],
             )
             local_file_path = os.path.join(os.getcwd(), "downloads", path, fileName)
-            content_type = getMymetype(local_file_path)[0]
+            print("./downloads/" + path + "/" + fileName)
             start_time = time.time()
-            s3.upload_file(
-                local_file_path,
-                tk[3],
-                folder + "/" + fileName,
-                ExtraArgs={"ContentType": content_type},
-            )
+            s3.upload_file(local_file_path, tk[3], folder + "/" + fileName)
             upload_time = time.time() - start_time
             os.remove(local_file_path)
             return {"title": fileName, "time": upload_time}
-        except Exception:
+        except Exception as e:
+            print(e)
             raise StorageErrorException("S3 upload error")
 
     def remove_file(self, fileID: str, fileName: str, path: str):

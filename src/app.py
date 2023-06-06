@@ -5,6 +5,7 @@ import os
 from .utils import *
 from .controller import *
 from .exception.exceptions import configure_errors_handlers
+from dotenv import set_key
 
 
 app = Flask(__name__)
@@ -12,7 +13,6 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
     "SQLALCHEMY_DATABASE_URI", "sqlite:///:memory:"
 )
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
 CORS(app)
 warnings.filterwarnings(
     "ignore", category=DeprecationWarning, module="flask_marshmallow"

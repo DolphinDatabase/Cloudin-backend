@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudin-midall
+  labels:
+    app: cloudin-midall
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: cloudin-midall
+  template:
+    metadata:
+      labels:
+        app: cloudin-midall
+    spec:
+      containers:
+        - name: backend
+          image: {{ include "cloudin-midall.getImage" . }}
+          ports:
+            - containerPort: {{ .Values.backend.ports.containerPort }}
+          env:
+          - name: DATABASE_URL
+            value: mysql://dbuser:dbuser@cloudin-midall-mysql:3306/cloudin
+{{ include "cloudin-midall.probeAndResources" .Values.backend.ports.containerPort | nindent 10 }}

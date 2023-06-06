@@ -1,0 +1,14 @@
+repos:
+  - repo: https://github.com/ambv/black
+    rev: 23.3.0
+    hooks:
+    - id: black
+    
+  - repo: local
+    hooks:
+    - id: jira-ticket
+      name: check for jira ticket
+      language: pygrep
+      entry: '\A(?![A-Z]+-[0-9]+)'
+      args: [--multiline]
+      stages: [commit-msg]

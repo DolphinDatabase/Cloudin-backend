@@ -1,9 +1,12 @@
 from flask import Response
+from flask import make_response, request
+from apscheduler.triggers.interval import IntervalTrigger
 
 from ..utils import *
 from ..model import *
 from ..schema import *
 from ..services import *
+import os
 
 from .google import filesByFolderGoogle
 from .s3 import filesByFolderS3
@@ -29,7 +32,8 @@ def configure_routes(app):
 
         return Response(stream(), mimetype="text/event-stream")
 
-    @scheduler.scheduled_job("interval", seconds=60)
+    @scheduler.scheduled_job("interval", seconds=int(load_json_file()["JOB_TIME"]))
+    @limit_bandwidth(int(getBandwidth() * (int(load_json_file()["BAND"]) / 100)))
     def myFunction():
         with app.app_context():
             schema = TransactionSchema()
@@ -51,14 +55,16 @@ def configure_routes(app):
                         event="newTransaction",
                     )
                     announcer.announce(msg=msg)
-
-                    files = make_transaction(i, originService, destinyService)
-                    if not files:
-                        transaction = update_transaction(transaction, "Erro", files)
-                    else:
-                        transaction = update_transaction(
-                            transaction, "Concluido", files
-                        )
+                    try:
+                        files = make_transaction(i, originService, destinyService)
+                        if len(files) <= 0:
+                            transaction = update_transaction(transaction, "Erro", [])
+                        else:
+                            transaction = update_transaction(
+                                transaction, "Concluido", files
+                            )
+                    except Exception as e:
+                        transaction = update_transaction(transaction, "Erro", [])
 
                     msg = format_sse(
                         data={"config": i.id, "transaction": schema.dump(transaction)},
@@ -66,6 +72,25 @@ def configure_routes(app):
                     )
                     announcer.announce(msg=msg)
 
+    @app.route("/job", methods=["POST"], strict_slashes=False)
+    def set_job_time():
+        body = request.get_json()
+        data = load_json_file()
+        data["JOB_TIME"] = str(body["job"])
+        data["BAND"] = str(body["band"])
+        data["TRANSFER_TIME"] = str(body["transfer"])
+        save_json_file(data)
+        scheduler.remove_all_jobs()
+        scheduler.add_job(myFunction, IntervalTrigger(seconds=int(body["job"])))
+        return make_response({}, 200)
+
+    @app.route("/job", methods=["GET"], strict_slashes=False)
+    def get_job_time():
+        data = load_json_file()
+        return make_response(data, 200)
+
     @app.route("/")
     def helloWorld():
-        return "Hello World!"
+        return "Hello World!!!"
+
+    return myFunction
