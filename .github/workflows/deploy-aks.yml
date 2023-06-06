@@ -55,6 +55,7 @@ jobs:
       run: |
         az account set --subscription 16cbcfe3-5051-4f12-bebe-6919e9f04763
         az aks get-credentials --resource-group azure-cluster --name azure-cluster
+        ls
         cd cloudin-midall/
         helm package .
         helm upgrade cloudin ./cloudin-midall-1.0.0.tgz --namespace cloudin-cd --set backend.image.tag=${{ steps.increment_tag.outputs.tag }}
