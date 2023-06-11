@@ -1,19 +1,10 @@
 FROM python:3.11-bullseye
+RUN apt-get update && apt-get install -y zabbix-agent
+RUN sed -i 's/Server=127.0.0.1/Server=ec2-18-207-208-168.compute-1.amazonaws.com/g' /etc/zabbix/zabbix_agentd.conf \
+    && sed -i 's/Hostname=Zabbix server/Hostname=cloudin-backend/g' /etc/zabbix/zabbix_agentd.conf
 COPY ./requirements.txt /app/requirements.txt
 WORKDIR /app
 RUN pip install -r requirements.txt
 COPY . /app
 ENTRYPOINT [ "flask" ]
 CMD [ "run","--host=0.0.0.0","--port=5000"]
-
-# docker logout
-
-# docker build -t midall-backend-api5:1.1.3 .
-
-# docker tag midall-backend-api5:1.1.3 dolphindatabase/midall-backend-api5:1.1.3
-
-# docker login 
-
-# docker push dolphindatabase/midall-backend-api5:1.1.3
-
-# docker run -p 8080:8080 midall-backend-api5:1.1.3
