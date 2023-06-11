@@ -26,5 +26,3 @@ services:
       dockerfile: Dockerfile
     ports:
       - 5000:5000
-    environment:
-      - SQLALCHEMY_DATABASE_URI=mysql://backend:api5sem@ec2-54-196-223-210.compute-1.amazonaws.com:3306/cloudin
