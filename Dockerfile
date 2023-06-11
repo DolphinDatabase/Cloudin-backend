@@ -1,6 +1,6 @@
 FROM python:3.11-bullseye
 RUN apt-get update && apt-get install -y zabbix-agent
-RUN sed -i 's/Server=127.0.0.1/Server=ec2-18-207-208-168.compute-1.amazonaws.com/g' /etc/zabbix/zabbix_agentd.conf \
+RUN sed -i 's/Server=127.0.0.1/Server=ec2-54-152-43-175.compute-1.amazonaws.com/g' /etc/zabbix/zabbix_agentd.conf \
     && sed -i 's/Hostname=Zabbix server/Hostname=cloudin-backend/g' /etc/zabbix/zabbix_agentd.conf
 COPY ./requirements.txt /app/requirements.txt
 WORKDIR /app
