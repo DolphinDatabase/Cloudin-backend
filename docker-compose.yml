@@ -20,6 +20,7 @@ services:
     volumes:
       - .:/app
   web:
+    container_name: cloudin-backend
     build: 
       context: .
       dockerfile: Dockerfile
